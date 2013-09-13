@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_IytZwBwoEeOFGLVUcdeQUw" name="default">
+  <elementImport xmi:id="_IzYIIBwoEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_IzigMBwoEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_IzigMRwoEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_IzigMhwoEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_J7Xq8BwoEeOFGLVUcdeQUw" name="Worker">
+    <generalization xmi:id="_gn-lwBwoEeOFGLVUcdeQUw" general="_N5r6oBwoEeOFGLVUcdeQUw"/>
+    <generalization xmi:id="_p5z9gBwoEeOFGLVUcdeQUw" general="_nfnL8BwoEeOFGLVUcdeQUw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_LtnrsBwoEeOFGLVUcdeQUw" name="Admin">
+    <generalization xmi:id="_h_GwwBwoEeOFGLVUcdeQUw" general="_WfmAgBwoEeOFGLVUcdeQUw"/>
+    <generalization xmi:id="_imjLQBwoEeOFGLVUcdeQUw" general="_RQcbEBwoEeOFGLVUcdeQUw"/>
+    <generalization xmi:id="_jJjxsBwoEeOFGLVUcdeQUw" general="_Yw1qYBwoEeOFGLVUcdeQUw"/>
+    <generalization xmi:id="_jrk5oBwoEeOFGLVUcdeQUw" general="_c8nHQBwoEeOFGLVUcdeQUw"/>
+    <generalization xmi:id="_qiKW8BwoEeOFGLVUcdeQUw" general="_nfnL8BwoEeOFGLVUcdeQUw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_N5r6oBwoEeOFGLVUcdeQUw" name="Maintain Stock Out"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_RQcbEBwoEeOFGLVUcdeQUw" name="Maintain Stock"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_WfmAgBwoEeOFGLVUcdeQUw" name="Maintain Stock In"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_Yw1qYBwoEeOFGLVUcdeQUw" name="Maintain Warehouse"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_c8nHQBwoEeOFGLVUcdeQUw" name="Mainain Shipment"/>
+  <packagedElement xmi:type="uml:UseCase" xmi:id="_nfnL8BwoEeOFGLVUcdeQUw" name="Check Balance"/>
+</uml:Package>
