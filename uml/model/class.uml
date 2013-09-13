@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_dx4s8BwpEeOFGLVUcdeQUw" name="class">
+  <elementImport xmi:id="_dzIqIBwpEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_dzIqIRwpEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_dzIqIhwpEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_dzIqIxwpEeOFGLVUcdeQUw">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_e6WJ0BwpEeOFGLVUcdeQUw" name="Stock">
+    <ownedAttribute xmi:id="_gNNf4BwpEeOFGLVUcdeQUw" name="code" aggregation="composite"/>
+    <ownedAttribute xmi:id="_hwVfgBwpEeOFGLVUcdeQUw" name="name" aggregation="composite"/>
+    <ownedAttribute xmi:id="_lsB5ABwpEeOFGLVUcdeQUw" name="description" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_qd0NABwpEeOFGLVUcdeQUw" name="Warehouse">
+    <ownedAttribute xmi:id="_rcKroBwpEeOFGLVUcdeQUw" name="code" aggregation="composite"/>
+    <ownedAttribute xmi:id="_s-y8ABwpEeOFGLVUcdeQUw" name="name" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_vdSXsBwpEeOFGLVUcdeQUw" name="Shipment">
+    <ownedAttribute xmi:id="_wOfLIBwpEeOFGLVUcdeQUw" name="code" aggregation="composite"/>
+    <ownedAttribute xmi:id="_xdFsQBwpEeOFGLVUcdeQUw" name="date" aggregation="composite"/>
+    <ownedAttribute xmi:id="_yiRysBwpEeOFGLVUcdeQUw" name="description" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_2B1CwBwpEeOFGLVUcdeQUw" name="StockIn">
+    <ownedAttribute xmi:id="_34EysBwpEeOFGLVUcdeQUw" name="stock" aggregation="composite"/>
+    <ownedAttribute xmi:id="_4wY6wBwpEeOFGLVUcdeQUw" name="width" aggregation="composite"/>
+    <ownedAttribute xmi:id="_5f66QBwpEeOFGLVUcdeQUw" name="length" aggregation="composite"/>
+    <ownedAttribute xmi:id="_6jEZUBwpEeOFGLVUcdeQUw" name="shipment" aggregation="composite"/>
+    <ownedAttribute xmi:id="_7UEYcBwpEeOFGLVUcdeQUw" name="warehouse" aggregation="composite"/>
+    <ownedAttribute xmi:id="_8Cb6UBwpEeOFGLVUcdeQUw" name="quantity" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_9OHqUBwpEeOFGLVUcdeQUw" name="StockOut">
+    <ownedAttribute xmi:id="__Aow0BwpEeOFGLVUcdeQUw" name="barcode" aggregation="composite"/>
+    <ownedAttribute xmi:id="__5VTYBwpEeOFGLVUcdeQUw" name="date" aggregation="composite"/>
+    <ownedAttribute xmi:id="_AxPy0BwqEeOFGLVUcdeQUw" name="sold" aggregation="composite"/>
+    <ownedAttribute xmi:id="_BfpJ4BwqEeOFGLVUcdeQUw" name="reference" aggregation="composite"/>
+  </packagedElement>
+</uml:Package>
