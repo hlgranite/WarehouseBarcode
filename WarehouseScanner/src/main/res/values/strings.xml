@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Warehouse Scanner</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_checkout">CheckoutActivity</string>
+    <string name="scan">Scan</string>
+    <string name="manual">Manual</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_balance">BalanceActivity</string>
+
+</resources>

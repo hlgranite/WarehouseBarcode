@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CheckoutActivity"
+    android:gravity="center">
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/scan"
+        android:id="@id/scan"
+        android:layout_gravity="center"
+        android:layout_marginTop="10pt"
+        android:layout_marginBottom="10pt"
+        android:layout_marginLeft="10pt"
+        android:layout_marginRight="10pt"
+        android:height="30pt" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manual"
+        android:id="@id/manual"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="10pt"
+        android:layout_marginBottom="10pt"
+        android:layout_marginLeft="10pt"
+        android:layout_marginRight="10pt"
+        android:height="30pt" />
+</LinearLayout>

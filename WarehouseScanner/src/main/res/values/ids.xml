@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="history" type="id">History</item>
+    <item name="balance" type="id">Balance</item><item name="checkout" type="id">Check Out</item><item name="scan" type="id">Scan</item><item name="manual" type="id">Manual</item>
+</resources>
