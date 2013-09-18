@@ -6,6 +6,10 @@ import android.app.TabActivity;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+/**
+ * Main entrance for TabHost.
+ * TODO: http://stackoverflow.com/questions/17687717/tutorial-to-implement-the-use-of-tabhost-in-android-2-2-viewpager-and-fragment
+ */
 public class MainActivity extends TabActivity {
 
     @Override
@@ -16,20 +20,23 @@ public class MainActivity extends TabActivity {
         TabHost tabHost = getTabHost();
 
         // Checkout tab
-        TabSpec scanSpec = tabHost.newTabSpec("CHECKOUT");
-        scanSpec.setIndicator("CHECKOUT");
+        String tabName = getString(R.string.checkout);
+        TabSpec scanSpec = tabHost.newTabSpec(tabName);
+        scanSpec.setIndicator(tabName);
         Intent checkoutIntent = new Intent(this, CheckoutActivity.class);
         scanSpec.setContent(checkoutIntent);
 
         // History tab
-        TabSpec historySpec = tabHost.newTabSpec("HISTORY");
-        historySpec.setIndicator("HISTORY");
+        tabName = getString(R.string.history);
+        TabSpec historySpec = tabHost.newTabSpec(tabName);
+        historySpec.setIndicator(tabName);
         Intent historyIntent = new Intent(this, HistoryActivity.class);
         historySpec.setContent(historyIntent);
 
         // Balance tab
-        TabSpec balanceSpec = tabHost.newTabSpec("BALANCE");
-        balanceSpec.setIndicator("BALANCE");
+        tabName = getString(R.string.balance);
+        TabSpec balanceSpec = tabHost.newTabSpec(tabName);
+        balanceSpec.setIndicator(tabName);
         Intent balanceIntent = new Intent(this, BalanceActivity.class);
         balanceSpec.setContent(balanceIntent);
 
