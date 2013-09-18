@@ -22,6 +22,7 @@ public class BalanceActivity extends Activity {
         setContentView(R.layout.activity_balance);
 
         final ListView listView = (ListView)findViewById(R.id.listView);
+        // TODO: Get data from fusion table
         String[] values = new String[]{"Android", "iPhone", "WindowsMobile",
                 "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
                 "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
