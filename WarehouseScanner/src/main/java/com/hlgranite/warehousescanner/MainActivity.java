@@ -8,7 +8,8 @@ import android.widget.TabHost.TabSpec;
 
 /**
  * Main entrance for TabHost.
- * TODO: http://stackoverflow.com/questions/17687717/tutorial-to-implement-the-use-of-tabhost-in-android-2-2-viewpager-and-fragment
+ * TODO: Change to fragment layout.
+ * http://stackoverflow.com/questions/17687717/tutorial-to-implement-the-use-of-tabhost-in-android-2-2-viewpager-and-fragment
  */
 public class MainActivity extends TabActivity {
 

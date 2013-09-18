@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yeang-shing.then on 9/18/13.
@@ -24,11 +26,11 @@ import java.net.URLConnection;
  */
 public class InventoryArrayAdapter extends ArrayAdapter<String> {
     private final Context context;
-    private final String[] values;
+    private final List<Stock> values;
     private ImageView imageView;
 
-    public InventoryArrayAdapter(Context context, String[] values) {
-        super(context, R.layout.layout_stock, values);
+    public InventoryArrayAdapter(Context context, List<Stock> values) {
+        super(context, R.layout.layout_stock);
         this.context = context;
         this.values = values;
     }
@@ -38,9 +40,9 @@ public class InventoryArrayAdapter extends ArrayAdapter<String> {
         View rowView = inflater.inflate(R.layout.layout_stock, parent, false);
 
         TextView textView = (TextView)rowView.findViewById(R.id.textView);
-        textView.setText(values[position]);
+        textView.setText(values.get(position).getName());
 
-        String url = "http://www.tilemart.ca/product/granite/black%20galaxy.jpg";
+        String url = values.get(position).getImageUrl();
         imageView = (ImageView)rowView.findViewById(R.id.imageView);
         new DownloadImageTask().execute(url);
 
@@ -64,11 +66,6 @@ public class InventoryArrayAdapter extends ArrayAdapter<String> {
                 Log.e("ERROR", "Could not load bitmap from: " + params[0]);
                 return bitmap;
             }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
