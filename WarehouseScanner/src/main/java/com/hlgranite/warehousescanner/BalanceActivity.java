@@ -1,5 +1,7 @@
 package com.hlgranite.warehousescanner;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -7,15 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
-//import com.google.api.client.http.GenericUrl;
-//import com.google.api.client.http.HttpRequest;
-//import com.google.api.client.http.HttpRequestFactory;
-//import com.google.api.client.http.HttpResponse;
-//import com.google.api.client.http.HttpTransport;
-//import com.google.api.client.http.javanet.NetHttpTransport;
-//import com.google.api.client.json.jackson2.JacksonFactory;
-//import com.google.api.client.json.JsonFactory;
 
 import java.util.ArrayList;
 
@@ -26,49 +19,46 @@ public class BalanceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
 
-        final ListView listView = (ListView)findViewById(R.id.listView);
-        // TODO: Get data from fusion table
-        String url = "https://www.googleapis.com/fusiontables/v1/query?sql=SELECT%20*%20FROM%201hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM&key=AIzaSyCY5_CBNvNUlJv5LILyOHMEeRfzdolcM5k";
-
-        // Approach 1
-//        HttpTransport httpTransport = new NetHttpTransport();
-//        HttpRequestFactory factory = httpTransport.createRequestFactory(null);
-//        GenericUrl genericUrl = new GenericUrl(url);
-//        HttpRequest request = null;
-//        HttpResponse response = null;
-//
-//        try {
-//            request = factory.buildGetRequest(genericUrl);
-//            response = request.execute();
-//        } catch(IOException ex) {
-//            Log.e("ERROR", ex.getMessage());
-//        }
-//
-//        FusionManager fusionManager = null;
-//        try {
-//            fusionManager = response.parseAs(FusionManager.class);
-//        } catch (IOException ex) {
-//            Log.e("ERROR", ex.getMessage());
-//        }
-
-        // Approach 2
-        FusionManager fusionManager = new FusionManager("AIzaSyCY5_CBNvNUlJv5LILyOHMEeRfzdolcM5k");
-        ArrayList<Stock> stocks = fusionManager.getStocks();
         //ArrayList<Stock> stocks = new ArrayList<Stock>();
         //stocks.add(new Stock("BLUE", "Blue Pearl", "", "http://www.maidstonefuneraldirectors.co.uk/wp-content/uploads/2012/08/blue_pearl-sample.jpg"));
         //stocks.add(new Stock("RUBY", "Ruby Red", "", ""));
         //stocks.add(new Stock("BLAC", "Black Galaxy", "", ""));
 
-        final InventoryArrayAdapter adapter = new InventoryArrayAdapter(this, stocks);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                final Stock item = (Stock)parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), item.getName(), Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+        // Get data from fusion table
+        new RetrieveBalance(this).execute();
+    }
+
+    private class RetrieveBalance extends AsyncTask<String, Void, ArrayList<Stock>> {
+
+        private Context context;
+
+        public RetrieveBalance(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected ArrayList<Stock> doInBackground(String... params) {
+            // TODO: Move api key to local file
+            FusionManager fusionManager = new FusionManager("AIzaSyCY5_CBNvNUlJv5LILyOHMEeRfzdolcM5k");
+            return fusionManager.getStocks();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Stock> stocks) {
+            super.onPostExecute(stocks);
+
+            final InventoryArrayAdapter adapter = new InventoryArrayAdapter(context, stocks);
+            final ListView listView = (ListView)findViewById(R.id.listView);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                    final Stock item = (Stock)parent.getItemAtPosition(position);
+                    Toast.makeText(getApplicationContext(), item.getName(), Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+        }
     }
 
 

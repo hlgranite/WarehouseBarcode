@@ -1,6 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -27,7 +26,7 @@ public class FusionManager {
     protected final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query?sql=";
     protected final String stockTable = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
     protected String apiKey;
-    protected ArrayList<Stock> stocks;
+    protected static ArrayList<Stock> stocks;
 
     /**
      * Get stock collection from web response.
@@ -36,49 +35,34 @@ public class FusionManager {
     public ArrayList<Stock> getStocks() {
         this.stocks = new ArrayList<Stock>();
         String url = urlPrefix + "SELECT * FROM " + stockTable + "&key=" + apiKey;
-        new DownloadStocks().execute(validateUrl(url));
-        return this.stocks;
-    }
 
-    private class DownloadStocks extends AsyncTask<String, Void, ArrayList<Stock>> {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
         StringBuilder builder = new StringBuilder();
-        JSONArray result = null;
         JSONObject object = null;
 
-        @Override
-        protected ArrayList<Stock> doInBackground(String... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(params[0]);
-            HttpResponse response = null;
-
-            try {
-                response = httpClient.execute(httpPost);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-                String line = "";
-                while(null != (line = reader.readLine())) {
-                    builder.append(line);
-                }
-
-                JSONParser parser = new JSONParser();
-                object = (JSONObject)parser.parse(validateJson(builder.toString()));
-                Log.i("INFO", object.toString());
-            } catch(ClientProtocolException e) {
-                Log.e("ERROR", e.getMessage());
-            } catch(IOException e) {
-                Log.e("ERROR", e.getMessage());
-            } catch (ParseException e) {
-                Log.e("ERROR", e.getMessage());
-                Log.e("ERROR", "Position: "+e.getPosition());
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
             }
 
-            return stocks;
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
         }
 
-        @Override
-        protected void onPostExecute(ArrayList<Stock> stocks) {
-            super.onPostExecute(stocks);
-
-            Object o = object.get("rows");
+        Object o = object.get("rows");
+        if(o != null) {
             JSONArray rows = (JSONArray)o;
             for(int i=0;i<rows.size();i++) {
                 o = rows.get(i);
@@ -90,6 +74,8 @@ public class FusionManager {
                 stocks.add(new Stock(code,name,description,imageUrl));
             }
         }
+
+        return this.stocks;
     }
 
     /**
@@ -100,17 +86,6 @@ public class FusionManager {
     private String validateUrl(String url) {
         url = url.replace(" ", "%20");
         return url;
-    }
-
-    private String validateJson(String response) {
-        String output = "";
-        int length = response.length();
-        output = response.substring(1,length-2);
-        output = "[" + output + "]";
-        //output = output.replace(": ", ":");
-        //output = output.replace("\n", "");
-        Log.i("INFO", "Json: "+output);
-        return response;// output;
     }
 
     public FusionManager(String apiKey) {
