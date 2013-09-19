@@ -23,5 +23,5 @@ android {
 }
 
 dependencies {
-    compile 'com.google.apis:google-api-services-fusiontables:v1-rev33-1.17.0-rc'
+    compile files('libs/json-simple-1.1.1.jar')
 }

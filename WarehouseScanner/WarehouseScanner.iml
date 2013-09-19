@@ -74,6 +74,7 @@
     <orderEntry type="library" exported="" name="google-http-client-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="google-api-services-fusiontables-v1-rev33-1.17.0-rc" level="project" />
     <orderEntry type="library" exported="" name="google-api-client-1.17.0-rc" level="project" />
+    <orderEntry type="library" name="json-simple-1.1.1" level="project" />
   </component>
 </module>
 
