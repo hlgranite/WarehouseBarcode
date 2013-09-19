@@ -16,7 +16,7 @@ public class FusionManager {
         return this.stocks;
     }
 
-//    public FusionManager() {
-//
-//    }
+    public FusionManager() {
+
+    }
 }

@@ -24,13 +24,13 @@ import java.util.List;
  * Created by yeang-shing.then on 9/18/13.
  * http://www.vogella.com/articles/AndroidListView/article.html
  */
-public class InventoryArrayAdapter extends ArrayAdapter<String> {
+public class InventoryArrayAdapter extends ArrayAdapter<Stock> {
     private final Context context;
-    private final List<Stock> values;
+    private final ArrayList<Stock> values;
     private ImageView imageView;
 
-    public InventoryArrayAdapter(Context context, List<Stock> values) {
-        super(context, R.layout.layout_stock);
+    public InventoryArrayAdapter(Context context, ArrayList<Stock> values) {
+        super(context, R.layout.layout_stock, values);
         this.context = context;
         this.values = values;
     }
@@ -43,8 +43,10 @@ public class InventoryArrayAdapter extends ArrayAdapter<String> {
         textView.setText(values.get(position).getName());
 
         String url = values.get(position).getImageUrl();
-        imageView = (ImageView)rowView.findViewById(R.id.imageView);
-        new DownloadImageTask().execute(url);
+        if(url != null && !url.isEmpty()) {
+            imageView = (ImageView)rowView.findViewById(R.id.imageView);
+            new DownloadImageTask().execute(url);
+        }
 
         return rowView;
     }

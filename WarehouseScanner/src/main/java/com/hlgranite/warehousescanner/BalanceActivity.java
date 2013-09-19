@@ -1,7 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -33,33 +31,9 @@ public class BalanceActivity extends Activity {
 
         final ListView listView = (ListView)findViewById(R.id.listView);
         // TODO: Get data from fusion table
-        String[] values = new String[]{"Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile"};
-        final ArrayList<String> list = new ArrayList<String>();
-        for(int i=0;i<values.length;i++) {
-            list.add(values[i]);
-        }
+        String url = "";
 
-        String url = "";//TODO: url
-
-        HttpTransport httpTransport = new NetHttpTransport();
-        HttpRequestFactory factory = httpTransport.createRequestFactory(null);
-        //JacksonFactory jsonFactory = new JacksonFactory();
-        GenericUrl genericUrl = new GenericUrl(url);
-        HttpRequest request = null;
-        HttpResponse response = null;
-
-        try {
-            request = factory.buildGetRequest(genericUrl);
-            response = request.execute();
-        } catch(IOException ex) {
-            Log.e("ERROR", ex.getMessage());
-        }
-
-
+        // Approach 2
 //        HttpClient httpClient = new DefaultHttpClient();
 //        HttpPost httpPost = new HttpPost(url);
 //        HttpResponse response = null;
@@ -72,20 +46,40 @@ public class BalanceActivity extends Activity {
 //            Log.e("ERROR", ex.getMessage());
 //        }
 
-        FusionManager fusionManager = null;
-        try {
-            fusionManager = response.parseAs(FusionManager.class);
-        } catch (IOException ex) {
-            Log.e("ERROR", ex.getMessage());
-        }
-        List<Stock> stocks = fusionManager.getStocks();
+        // Approach 1
+//        HttpTransport httpTransport = new NetHttpTransport();
+//        HttpRequestFactory factory = httpTransport.createRequestFactory(null);
+//        GenericUrl genericUrl = new GenericUrl(url);
+//        HttpRequest request = null;
+//        HttpResponse response = null;
+//
+//        try {
+//            request = factory.buildGetRequest(genericUrl);
+//            response = request.execute();
+//        } catch(IOException ex) {
+//            Log.e("ERROR", ex.getMessage());
+//        }
+//
+//        FusionManager fusionManager = null;
+//        try {
+//            fusionManager = response.parseAs(FusionManager.class);
+//        } catch (IOException ex) {
+//            Log.e("ERROR", ex.getMessage());
+//        }
+//        List<Stock> stocks = fusionManager.getStocks();
+
+        ArrayList<Stock> stocks = new ArrayList<Stock>();
+        stocks.add(new Stock("BLUE", "Blue Pearl", "", "http://www.maidstonefuneraldirectors.co.uk/wp-content/uploads/2012/08/blue_pearl-sample.jpg"));
+        stocks.add(new Stock("RUBY", "Ruby Red", "", ""));
+        stocks.add(new Stock("BLAC", "Black Galaxy", "", ""));
+
         final InventoryArrayAdapter adapter = new InventoryArrayAdapter(this, stocks);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                final String item = (String)parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), item, Toast.LENGTH_LONG)
+                final Stock item = (Stock)parent.getItemAtPosition(position);
+                Toast.makeText(getApplicationContext(), item.getName(), Toast.LENGTH_LONG)
                         .show();
             }
         });
