@@ -79,12 +79,12 @@ public class FusionManager {
     }
 
     /**
-     * TODO: Validate an http url and parse unsupported character to html compatible.
+     * Validate an http url and parse unsupported character to html compatible.
      * @param url
      * @return
      */
     private String validateUrl(String url) {
-        url = url.replace(" ", "%20");
+        url = url.replace(" ", "+");// "%20");
         return url;
     }
 
