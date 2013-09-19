@@ -3,6 +3,8 @@ package com.hlgranite.warehousescanner;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Key;
 
+import java.util.Random;
+
 /**
  * Created by yeang-shing.then on 9/18/13.
  */
@@ -34,6 +36,8 @@ public class Stock extends GenericJson {
 
     private Integer balance;
     public Integer getBalance() {
+        // TODO: Calculate balance
+        this.balance = new Random().nextInt(100);
         return this.balance;
     }
 

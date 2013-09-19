@@ -42,6 +42,9 @@ public class InventoryArrayAdapter extends ArrayAdapter<Stock> {
         TextView textView = (TextView)rowView.findViewById(R.id.textView);
         textView.setText(values.get(position).getName());
 
+        TextView textView2 = (TextView)rowView.findViewById(R.id.balance);
+        textView2.setText(values.get(position).getBalance().toString());
+
         String url = values.get(position).getImageUrl();
         if(url != null && !url.isEmpty()) {
             imageView = (ImageView)rowView.findViewById(R.id.imageView);
