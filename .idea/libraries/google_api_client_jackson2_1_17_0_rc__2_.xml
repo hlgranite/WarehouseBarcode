@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="google-api-client-jackson2-1.17.0-rc (2)">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/WarehouseScanner/libs/google-api-client-jackson2-1.17.0-rc.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
