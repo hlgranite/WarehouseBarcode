@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import java.util.Date;
+import java.util.Random;
 
 public class CheckoutActivity extends Activity {
 
@@ -16,14 +17,30 @@ public class CheckoutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
+        Button scan = (Button)findViewById(R.id.scan);
+        scan.setOnClickListener(scanClick);
+
         Button manual = (Button)findViewById(R.id.manual);
         manual.setOnClickListener(manualClick);
     }
 
+    protected View.OnClickListener scanClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // TODO: Launch camera for scan barcode
+            int code = new Random().nextInt(99);
+            Stock stock = new Stock("TE"+code,"Test "+code,"","");
+            FusionManager.addStock(stock);
+        }
+    };
+
+
     protected View.OnClickListener manualClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Barcode barcode = new Barcode("BLUE12001600B13P", new Date(), "ONE", "XDDT346346");
+            int width = new Random().nextInt(9999);
+            int length = new Random().nextInt(9999);
+            Barcode barcode = new Barcode("BLUE"+width+length+"B13P", new Date(), "ONE", "TEST"+new Random().nextInt(9999));
             FusionManager.checkout(barcode);
         }
     };

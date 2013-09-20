@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -38,20 +39,69 @@ import java.util.List;
 public class FusionManager {
 
     protected static String apiKey;
+    /**
+     * Auth token for read/write fusion table
+     */
+    protected static String auth = "DQAAAMUAAAD0gpcTtl-pXU_BVvOyfzdF8z7BdZNCnl9K3-_hBim3rQq0P5mpK-BwIEUytydMHJdUYyEIw198WrBMuW3_qoI4p734aIEdNdYev_tDle6ObyO12JGOrmBmdHqLCuSpA8HBAlTpe1-KfkSZW-3kLCJi2visQnoylu0J-yY7HGiPnhMbYf9RYtRJKpm_sGAHh8FkVVuIAIBZa47QW6rQE-EHFF2EX9Y-0JwD4pUCMgE8G6YZT7ghajBnAWgKXJuPHS2KkywtX4HqO8WuzVJSgvCH";
 
     protected final static String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
-    protected final static String stockTable = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
-    protected final static String checkoutTable = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
+    protected final static String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
+    protected final static String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
 
     protected static ArrayList<Stock> stocks;
+
+    public FusionManager(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    /**
+     * TODO: Authenticate with google account to retrieve auth token.
+     * @param email
+     * @param password
+     */
+    public static void authenticate(String email, String password) {
+
+        try {
+//            HttpClient client = new DefaultHttpClient();
+//            HttpPost post = new HttpPost("https://www.google.com/accounts/ClientLogin");
+//            List<NameValuePair> params = new ArrayList<NameValuePair>();
+//            params.add(new BasicNameValuePair("Email", email));
+//            params.add(new BasicNameValuePair("Passwd", password));
+//            params.add(new BasicNameValuePair("service", "fusiontables"));
+//            //params.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
+//            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+//            post.setEntity(ent);
+//            new PostWeb(post).execute();
+
+            String url = "https://www.google.com/accounts/ClientLogin?Email="+email+"&Passwd="+password+"&service=fusiontables";
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+            HttpResponse response = null;
+            StringBuilder builder = new StringBuilder();
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                Log.i("INFO", line);
+                if(line.startsWith("Auth=")) {
+                    auth = line.replace("Auth=","");
+                }
+                builder.append(line);
+            }
+        } catch (UnsupportedEncodingException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (IOException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+    }
 
     /**
      * Get stock collection from web response.
      * @return
      */
-    public ArrayList<Stock> getStocks() {
-        this.stocks = new ArrayList<Stock>();
-        String url = urlPrefix + "?sql=SELECT * FROM " + stockTable + "&key=" + apiKey;
+    public static ArrayList<Stock> getStocks() {
+        stocks = new ArrayList<Stock>();
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockTableId + "&key=" + apiKey;
 
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(validateUrl(url));
@@ -93,7 +143,7 @@ public class FusionManager {
             }
         }
 
-        return this.stocks;
+        return stocks;
     }
 
     private static String toDateFormat(Date date) {
@@ -103,15 +153,16 @@ public class FusionManager {
     }
 
     /**
-     * TODO: Insert a record into StockOuts fusion table.
+     * Insert a record into StockOuts fusion table.
+     * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
      * @param barcode
      */
     public static void checkout(Barcode barcode) {
         try {
             HttpPost post = new HttpPost(urlPrefix);
 
-            String sql = "INSERT+INTO+" + checkoutTable + "(barcode,date,sold,reference)VALUES(";
-            sql += "'"+barcode.getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te",barcode.getDate())+"','"+barcode.getCustomer()+"','"+barcode.getReference()+"'";
+            String sql = "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
+            sql += "'"+barcode.getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS",barcode.getDate())+"','"+barcode.getCustomer()+"','"+barcode.getReference()+"'";
             sql += ")";
             Log.i("INFO", sql);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -119,9 +170,33 @@ public class FusionManager {
             params.add(new BasicNameValuePair("key", apiKey));
             UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
             post.setEntity(ent);
+            post.setHeader("Authorization", "GoogleLogin auth="+auth);
 
             new PostWeb(post).execute();
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+    /**
+     * Add a new stock into fusion table.
+     * @param stock
+     */
+    public static void addStock(Stock stock) {
+        try {
+            HttpPost post = new HttpPost(urlPrefix);
 
+            String sql = "INSERT INTO " + stockTableId + " (code,name,description,imageUrl) VALUES (";
+            sql += "'"  +stock.getCode() + "','" + stock.getName() + "','" + stock.getDescription() + "','" + stock.getImageUrl() + "'";
+            sql += ")";
+            Log.i("INFO", sql);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("sql", sql));
+            params.add(new BasicNameValuePair("key", apiKey));
+            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+            post.setHeader("Authorization", "GoogleLogin auth="+auth);
+
+            new PostWeb(post).execute();
         } catch(IOException e) {
             Log.e("ERROR", e.getMessage());
         }
@@ -167,12 +242,8 @@ public class FusionManager {
      * @param url
      * @return
      */
-    private String validateUrl(String url) {
+    private static String validateUrl(String url) {
         url = url.replace(" ", "+");// "%20");
         return url;
-    }
-
-    public FusionManager(String apiKey) {
-        this.apiKey = apiKey;
     }
 }

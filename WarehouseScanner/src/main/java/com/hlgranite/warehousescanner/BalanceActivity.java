@@ -39,8 +39,7 @@ public class BalanceActivity extends Activity {
         @Override
         protected ArrayList<Stock> doInBackground(String... params) {
             // TODO: Move api key to local file
-            FusionManager fusionManager = new FusionManager("AIzaSyCY5_CBNvNUlJv5LILyOHMEeRfzdolcM5k");
-            return fusionManager.getStocks();
+            return FusionManager.getStocks();
         }
 
         @Override
