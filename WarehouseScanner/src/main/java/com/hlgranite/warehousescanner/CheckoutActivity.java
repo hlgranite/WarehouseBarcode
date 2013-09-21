@@ -12,6 +12,8 @@ import java.util.Random;
 
 public class CheckoutActivity extends Activity {
 
+    private FusionManager fusionManager = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,15 +24,14 @@ public class CheckoutActivity extends Activity {
 
         Button manual = (Button)findViewById(R.id.manual);
         manual.setOnClickListener(manualClick);
+
+        fusionManager = FusionManager.getInstance();
     }
 
     protected View.OnClickListener scanClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             // TODO: Launch camera for scan barcode
-            int code = new Random().nextInt(99);
-            Stock stock = new Stock("TE"+code,"Test "+code,"","");
-            FusionManager.addStock(stock);
         }
     };
 
@@ -41,7 +42,7 @@ public class CheckoutActivity extends Activity {
             int width = new Random().nextInt(9999);
             int length = new Random().nextInt(9999);
             Barcode barcode = new Barcode("BLUE"+width+length+"B13P", new Date(), "ONE", "TEST"+new Random().nextInt(9999));
-            FusionManager.checkout(barcode);
+            fusionManager.checkout(barcode);
         }
     };
 

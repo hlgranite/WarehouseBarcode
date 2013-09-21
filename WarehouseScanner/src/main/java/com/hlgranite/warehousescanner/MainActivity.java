@@ -1,6 +1,7 @@
 package com.hlgranite.warehousescanner;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.TabActivity;
 import android.util.Log;
@@ -53,10 +54,7 @@ public class MainActivity extends TabActivity {
     protected void onStart() {
         super.onStart();
         Log.i("INFO", "MainActivity onStart");
-
-        FusionManager manager = new FusionManager(getResources().getString(R.string.api));
-        // TODO: Authenticate user account to get auth token
-        //FusionManager.authenticate(getResources().getString(R.string.email), getResources().getString(R.string.password));
+        new Authenticate().execute();
     }
 
     @Override
@@ -64,5 +62,17 @@ public class MainActivity extends TabActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    private class Authenticate extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            // Setup a singleton datastore object
+            FusionManager fusionManager = FusionManager.getInstance();
+            fusionManager.setApi(getResources().getString(R.string.api));
+            fusionManager.authenticate(getResources().getString(R.string.email), getResources().getString(R.string.password));
+            return null;
+        }
     }
 }

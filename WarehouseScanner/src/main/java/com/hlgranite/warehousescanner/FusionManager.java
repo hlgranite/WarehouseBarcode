@@ -38,28 +38,50 @@ import java.util.List;
  */
 public class FusionManager {
 
-    protected static String apiKey;
+    private static FusionManager instance;
+
+    private String apiKey = null;
     /**
      * Auth token for read/write fusion table
      */
-    protected static String auth = "DQAAAMUAAAD0gpcTtl-pXU_BVvOyfzdF8z7BdZNCnl9K3-_hBim3rQq0P5mpK-BwIEUytydMHJdUYyEIw198WrBMuW3_qoI4p734aIEdNdYev_tDle6ObyO12JGOrmBmdHqLCuSpA8HBAlTpe1-KfkSZW-3kLCJi2visQnoylu0J-yY7HGiPnhMbYf9RYtRJKpm_sGAHh8FkVVuIAIBZa47QW6rQE-EHFF2EX9Y-0JwD4pUCMgE8G6YZT7ghajBnAWgKXJuPHS2KkywtX4HqO8WuzVJSgvCH";
+    private String auth = "";
+    private final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
+    private final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
+    private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
 
-    protected final static String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
-    protected final static String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
-    protected final static String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
+    private ArrayList<Stock> stocks;
 
-    protected static ArrayList<Stock> stocks;
+    protected FusionManager() {
 
-    public FusionManager(String apiKey) {
-        this.apiKey = apiKey;
     }
 
     /**
-     * TODO: Authenticate with google account to retrieve auth token.
+     * Always return a same datastore object.
+     * @return
+     */
+    public static FusionManager getInstance() {
+        if(instance == null) {
+            // TODO: Handle multithreaded
+            instance = new FusionManager();
+        }
+
+        return instance;
+    }
+
+    /**
+     * Set api key for datastore.
+     * @param api Google SDK API key for fusion table.
+     */
+    public void setApi(String api) {
+        this.apiKey = api;
+    }
+
+    /**
+     * Authenticate with google account to retrieve auth token.
      * @param email
      * @param password
      */
-    public static void authenticate(String email, String password) {
+    public void authenticate(String email, String password) {
 
         try {
 //            HttpClient client = new DefaultHttpClient();
@@ -82,9 +104,9 @@ public class FusionManager {
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
             String line = "";
             while(null != (line = reader.readLine())) {
-                Log.i("INFO", line);
                 if(line.startsWith("Auth=")) {
-                    auth = line.replace("Auth=","");
+                    this.auth = line.replace("Auth=","");
+                    Log.i("INFO", "Auth: "+line);
                 }
                 builder.append(line);
             }
@@ -99,8 +121,8 @@ public class FusionManager {
      * Get stock collection from web response.
      * @return
      */
-    public static ArrayList<Stock> getStocks() {
-        stocks = new ArrayList<Stock>();
+    public ArrayList<Stock> getStocks() {
+        this.stocks = new ArrayList<Stock>();
         String url = urlPrefix + "?sql=SELECT * FROM " + stockTableId + "&key=" + apiKey;
 
         HttpClient httpClient = new DefaultHttpClient();
@@ -139,14 +161,14 @@ public class FusionManager {
                 String name = obj.get(1).toString();
                 String description = obj.get(2).toString();
                 String imageUrl = obj.get(3).toString();
-                stocks.add(new Stock(code,name,description,imageUrl));
+                this.stocks.add(new Stock(code,name,description,imageUrl));
             }
         }
 
-        return stocks;
+        return this.stocks;
     }
 
-    private static String toDateFormat(Date date) {
+    private String toDateFormat(Date date) {
         //date.getYear()+"-"+date.getMonth()+"-"
 
         return "";
@@ -157,7 +179,7 @@ public class FusionManager {
      * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
      * @param barcode
      */
-    public static void checkout(Barcode barcode) {
+    public void checkout(Barcode barcode) {
         try {
             HttpPost post = new HttpPost(urlPrefix);
 
@@ -181,7 +203,7 @@ public class FusionManager {
      * Add a new stock into fusion table.
      * @param stock
      */
-    public static void addStock(Stock stock) {
+    public void addStock(Stock stock) {
         try {
             HttpPost post = new HttpPost(urlPrefix);
 
@@ -202,7 +224,7 @@ public class FusionManager {
         }
     }
 
-    private static class PostWeb extends AsyncTask<String, Void, HttpEntity> {
+    private class PostWeb extends AsyncTask<String, Void, HttpEntity> {
 
         HttpClient client = new DefaultHttpClient();
         HttpPost post = null;
