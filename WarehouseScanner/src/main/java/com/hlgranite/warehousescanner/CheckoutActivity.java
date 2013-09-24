@@ -39,12 +39,23 @@ public class CheckoutActivity extends Activity {
     protected View.OnClickListener manualClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int width = new Random().nextInt(9999);
-            int length = new Random().nextInt(9999);
-            Barcode barcode = new Barcode("BLUE"+width+length+"B13P", new Date(), "ONE", "TEST"+new Random().nextInt(9999));
-            fusionManager.checkout(barcode);
+            int width = 0;
+            while( (width = generateNumber()) < 1000) {
+                width = generateNumber();
+            }
+            int length = 0;
+            while( (length = generateNumber()) < 1000) {
+                length = generateNumber();
+            }
+            Barcode barcode = new Barcode("BLUE"+width+length+"B13P");
+            WorkOrder order = new WorkOrder(barcode, new Date(), "ONE", "TEST"+new Random().nextInt(9999));
+            fusionManager.checkout(order);
         }
     };
+
+    private int generateNumber() {
+        return new Random().nextInt(9999);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

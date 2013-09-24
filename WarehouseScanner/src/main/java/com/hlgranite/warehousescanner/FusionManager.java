@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,9 +52,21 @@ public class FusionManager {
     private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
 
     private ArrayList<Stock> stocks;
+    private ArrayList<Shipment> shipments;
+    private ArrayList<WorkOrder> workOrders;
 
     protected FusionManager() {
 
+    }
+
+    /**
+     * Reset all data to null and retrieve again.
+     */
+    public void reset() {
+        Log.i("INFO", "FusionManager.reset()");
+        this.stocks = null;
+        this.workOrders = null;
+        this.shipments = null;
     }
 
     /**
@@ -122,9 +135,13 @@ public class FusionManager {
      * @return
      */
     public ArrayList<Stock> getStocks() {
-        this.stocks = new ArrayList<Stock>();
-        String url = urlPrefix + "?sql=SELECT * FROM " + stockTableId + "&key=" + apiKey;
+        if(this.stocks == null) {
+            this.stocks = new ArrayList<Stock>();
+        } else {
+            return this.stocks;
+        }
 
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockTableId + "&key=" + apiKey;
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(validateUrl(url));
         HttpResponse response = null;
@@ -168,23 +185,126 @@ public class FusionManager {
         return this.stocks;
     }
 
-    private String toDateFormat(Date date) {
-        //date.getYear()+"-"+date.getMonth()+"-"
+    public ArrayList<Shipment> getShipments() {
+        if(this.shipments == null) {
+            this.shipments = new ArrayList<Shipment>();
+        } else {
+            return this.shipments;
+        }
 
-        return "";
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockInTableId + "&key=" + apiKey;
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
+        StringBuilder builder = new StringBuilder();
+        JSONObject object = null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+            reader.close();
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
+        }
+
+        Object o = object.get("rows");
+        if(o != null) {
+            JSONArray rows = (JSONArray)o;
+            for(int i=0;i<rows.size();i++) {
+                o = rows.get(i);
+                JSONArray obj = (JSONArray)o;
+
+                String number = obj.get(0).toString();
+                number += obj.get(1).toString();
+                number += obj.get(2).toString();
+                number += obj.get(3).toString();
+                number += obj.get(4).toString();
+
+                Barcode barcode = new Barcode(number);
+                int quantity = Integer.parseInt(obj.get(5).toString());
+                this.shipments.add(new Shipment(barcode, quantity));
+            }
+        }
+
+        return this.shipments;
+    }
+
+    public ArrayList<WorkOrder> getWorkOrders() {
+        if(this.workOrders == null) {
+            this.workOrders = new ArrayList<WorkOrder>();
+        } else {
+            return this.workOrders;
+        }
+
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + "&key=" + apiKey;
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
+        StringBuilder builder = new StringBuilder();
+        JSONObject object = null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+            reader.close();
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
+        }
+
+        Object o = object.get("rows");
+        if(o != null) {
+            JSONArray rows = (JSONArray)o;
+            for(int i=0;i<rows.size();i++) {
+                o = rows.get(i);
+                JSONArray obj = (JSONArray)o;
+
+                String number = obj.get(0).toString();
+                Barcode barcode = new Barcode(number);
+                Date date = parseDate(obj.get(1).toString());
+                String customer = obj.get(2).toString();
+                String reference = obj.get(3).toString();
+                this.workOrders.add(new WorkOrder(barcode, date, customer, reference));
+            }
+        }
+
+        return this.workOrders;
     }
 
     /**
      * Insert a record into StockOuts fusion table.
      * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
-     * @param barcode
+     * @param order
      */
-    public void checkout(Barcode barcode) {
+    public void checkout(WorkOrder order) {
         try {
             HttpPost post = new HttpPost(urlPrefix);
 
             String sql = "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
-            sql += "'"+barcode.getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS",barcode.getDate())+"','"+barcode.getCustomer()+"','"+barcode.getReference()+"'";
+            sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS",order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
             sql += ")";
             Log.i("INFO", sql);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -267,5 +387,26 @@ public class FusionManager {
     private String validateUrl(String url) {
         url = url.replace(" ", "+");// "%20");
         return url;
+    }
+
+    /**
+     * Return date from a date string input.
+     * @param dateString
+     * @return
+     */
+    private Date parseDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(dateString.length() == 10) {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        }
+
+        Date converted = new Date();
+        try {
+            converted = dateFormat.parse(dateString);
+        } catch (java.text.ParseException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+
+        return converted;
     }
 }

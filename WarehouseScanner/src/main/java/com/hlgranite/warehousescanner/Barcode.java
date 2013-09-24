@@ -10,10 +10,29 @@ import java.util.Date;
 public class Barcode {
 
     private String stockCode;
+    public String getStockCode() {
+        return this.stockCode;
+    }
+
     private Integer width;
+    public Integer getWidth() {
+        return this.width;
+    }
+
     private Integer length;
+    public Integer getLength() {
+        return this.length;
+    }
+
     private String shipment;
+    public String getShipment() {
+        return this.shipment;
+    }
+
     private String warehouseCode;
+    public String getWarehouse() {
+        return this.warehouseCode;
+    }
 
     private String number;
     public void setNumber(String number) {
@@ -28,47 +47,29 @@ public class Barcode {
             this.shipment = number.substring(12,15);
         if(number.length() >= 16)
             this.warehouseCode = number.substring(15,16);
-        Log.i("INFO", "Stock:" + stockCode);
-        Log.i("INFO", "Width: " + width);
-        Log.i("INFO", "Length: " + length);
-        Log.i("INFO", "Shipment: " + shipment);
-        Log.i("INFO", "Warehouse: " + warehouseCode);
+//        Log.i("INFO", "Stock: " + stockCode);
+//        Log.i("INFO", "Width: " + width);
+//        Log.i("INFO", "Length: " + length);
+//        Log.i("INFO", "Shipment: " + shipment);
+//        Log.i("INFO", "Warehouse: " + warehouseCode);
     }
     public String getNumber() {
         return this.number;
     }
 
-    private Date date;
-    public Date getDate() {
-        return this.date;
-    }
-
-    private String customer;
-    public String getCustomer() {
-        return this.customer;
-    }
-
-    private String reference;
-    public String getReference() {
-        return this.reference;
-    }
-
-    private int quantity;
-    public int getQuantity() {
-        return this.quantity;
-    }
-
-    public Barcode(String number, Date date, String customer, String reference) {
+    public Barcode(String number) {
         setNumber(number);
-        this.date = date;
-        this.customer = customer;
-        this.reference = reference;
     }
-    public Barcode(String number, Date date, String customer, String reference, int quantity) {
-        setNumber(number);
-        this.date = date;
-        this.customer = customer;
-        this.reference = reference;
-        this.quantity = quantity;
+    public Barcode(String stockCode, Integer width, Integer length, String shipment, String warehouse) {
+        this.stockCode = stockCode;
+        this.width = width;
+        this.length = length;
+        this.shipment = shipment;
+        this.warehouseCode = warehouse;
+    }
+
+    @Override
+    public String toString() {
+        return this.stockCode+this.width.toString()+this.length.toString()+this.shipment+this.warehouseCode;
     }
 }

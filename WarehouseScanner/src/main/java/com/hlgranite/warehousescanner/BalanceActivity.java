@@ -19,14 +19,51 @@ public class BalanceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance);
 
-        // Get data from fusion table
-        new RetrieveBalance(this).execute();
+        // Get all shipment & workorder into memory
+        new RetrieveShipment(this).execute();
+    }
+
+    private class RetrieveShipment extends AsyncTask<String, Void, ArrayList<Shipment>> {
+
+        private Context context;
+        public RetrieveShipment(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected ArrayList<Shipment> doInBackground(String... params) {
+            return FusionManager.getInstance().getShipments();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Shipment> shipments) {
+            super.onPostExecute(shipments);
+            new RetrieveWorkOrder(context).execute();
+        }
+    }
+
+    private class RetrieveWorkOrder extends AsyncTask<String, Void, ArrayList<WorkOrder>> {
+
+        private Context context;
+        public RetrieveWorkOrder(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected ArrayList<WorkOrder> doInBackground(String... params) {
+            return FusionManager.getInstance().getWorkOrders();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<WorkOrder> workOrders) {
+            super.onPostExecute(workOrders);
+            new RetrieveBalance(context).execute();
+        }
     }
 
     private class RetrieveBalance extends AsyncTask<String, Void, ArrayList<Stock>> {
 
         private Context context;
-
         public RetrieveBalance(Context context) {
             this.context = context;
         }

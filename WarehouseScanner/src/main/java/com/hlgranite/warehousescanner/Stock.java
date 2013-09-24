@@ -1,6 +1,6 @@
 package com.hlgranite.warehousescanner;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Created by yeang-shing.then on 9/18/13.
@@ -29,8 +29,22 @@ public class Stock {
 
     private Integer balance;
     public Integer getBalance() {
-        // TODO: Calculate balance
-        this.balance = new Random().nextInt(100);
+        // Calculate balance
+        ArrayList<Shipment> shipments = FusionManager.getInstance().getShipments();
+        ArrayList<WorkOrder> workOrders = FusionManager.getInstance().getWorkOrders();
+
+        this.balance = 0;
+        for(Shipment shipment: shipments) {
+            if(shipment.getBarcode().getStockCode().equals(this.code)) {
+                this.balance += shipment.getQuantity();
+            }
+        }
+        for(WorkOrder workOrder: workOrders) {
+            if(workOrder.getBarcode().getStockCode().equals(this.code)) {
+                this.balance --;
+            }
+        }
+
         return this.balance;
     }
 
