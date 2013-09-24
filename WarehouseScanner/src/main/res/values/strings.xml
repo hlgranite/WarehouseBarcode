@@ -5,11 +5,16 @@
     <string name="title_activity_checkout">CheckoutActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="title_activity_balance">BalanceActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
     <string name="checkout">CHECKOUT</string>
     <string name="scan">SCAN</string>
     <string name="manual">MANUAL</string>
     <string name="history">HISTORY</string>
     <string name="balance">BALANCE</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
+    <string name="pref_user_profile">User Profile</string>
+    <string name="pref_user_name">Set username</string>
+    <string name="pref_user_name_summary">Set your username</string>
+    <string name="pref_password">Set password</string>
+    <string name="pref_password_summary">Set your password</string>
+    <string name="help">Help</string>
 </resources>
