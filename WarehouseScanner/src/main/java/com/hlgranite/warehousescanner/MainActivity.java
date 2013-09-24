@@ -1,11 +1,14 @@
 package com.hlgranite.warehousescanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.TabActivity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
@@ -15,6 +18,8 @@ import android.widget.TabHost.TabSpec;
  * http://stackoverflow.com/questions/17687717/tutorial-to-implement-the-use-of-tabhost-in-android-2-2-viewpager-and-fragment
  */
 public class MainActivity extends TabActivity {
+
+    private static final int RESULT_SETTINGS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +59,14 @@ public class MainActivity extends TabActivity {
     protected void onStart() {
         super.onStart();
         Log.i("INFO", "MainActivity onStart");
-        new Authenticate().execute();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String email = sharedPreferences.getString("prefUsername", "NULL");
+        String password = sharedPreferences.getString("prefPassword", "NULL");
+        Log.i("INFO", "Email: "+email+" Password: "+password);
+        if(!email.isEmpty() && !password.isEmpty()) {
+            new Authenticate().execute(email, password);
+        }
     }
 
     @Override
@@ -64,6 +76,33 @@ public class MainActivity extends TabActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivityForResult(i, RESULT_SETTINGS);
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        String email = sharedPreferences.getString("prefUsername", "NULL");
+//        String password = sharedPreferences.getString("prefPassword", "NULL");
+//        Log.i("INFO", "Email: "+email+" Password: "+password);
+        switch(requestCode) {
+            case RESULT_SETTINGS:
+                //new Authenticate().execute(email, password);
+                break;
+        }
+    }
+
     private class Authenticate extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -71,7 +110,7 @@ public class MainActivity extends TabActivity {
             // Setup a singleton datastore object
             FusionManager fusionManager = FusionManager.getInstance();
             fusionManager.setApi(getResources().getString(R.string.api));
-            fusionManager.authenticate(getResources().getString(R.string.email), getResources().getString(R.string.password));
+            fusionManager.authenticate(params[0], params[1]);
             return null;
         }
     }
