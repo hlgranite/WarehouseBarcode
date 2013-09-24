@@ -10,4 +10,6 @@
     <string name="manual">MANUAL</string>
     <string name="history">HISTORY</string>
     <string name="balance">BALANCE</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>

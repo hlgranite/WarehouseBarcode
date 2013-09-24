@@ -90,7 +90,6 @@ public class FusionManager {
 //            params.add(new BasicNameValuePair("Email", email));
 //            params.add(new BasicNameValuePair("Passwd", password));
 //            params.add(new BasicNameValuePair("service", "fusiontables"));
-//            //params.add(new BasicNameValuePair("accountType", "HOSTED_OR_GOOGLE"));
 //            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
 //            post.setEntity(ent);
 //            new PostWeb(post).execute();
