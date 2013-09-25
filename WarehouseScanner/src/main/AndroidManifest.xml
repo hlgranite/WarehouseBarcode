@@ -16,28 +16,33 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.hlgranite.warehousescanner.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".CheckoutActivity"
+            android:name="com.hlgranite.warehousescanner.CheckoutActivity"
             android:label="@string/title_activity_checkout" >
         </activity>
         <activity
-            android:name=".HistoryActivity"
+            android:name="com.hlgranite.warehousescanner.HistoryActivity"
             android:label="@string/title_activity_history" >
         </activity>
         <activity
-            android:name=".BalanceActivity"
+            android:name="com.hlgranite.warehousescanner.BalanceActivity"
             android:label="@string/title_activity_balance" >
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.hlgranite.warehousescanner.SettingsActivity"
             android:label="@string/title_activity_setting" >
+        </activity>
+        <activity
+            android:name="com.hlgranite.warehousescanner.ManualActivity"
+            android:label="@string/title_activity_manual" >
         </activity>
     </application>
 

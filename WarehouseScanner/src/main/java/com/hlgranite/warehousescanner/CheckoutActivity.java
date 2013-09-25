@@ -1,11 +1,14 @@
 package com.hlgranite.warehousescanner;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.Random;
@@ -13,6 +16,7 @@ import java.util.Random;
 public class CheckoutActivity extends Activity {
 
     private FusionManager fusionManager = null;
+    private final int MANUAL_ACTIVITY = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class CheckoutActivity extends Activity {
         @Override
         public void onClick(View v) {
             // TODO: Launch camera for scan barcode
+            Log.i("INFO", "Launch camera for scan barcode");
         }
     };
 
@@ -39,22 +44,20 @@ public class CheckoutActivity extends Activity {
     protected View.OnClickListener manualClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int width = 0;
-            while( (width = generateNumber()) < 1000) {
-                width = generateNumber();
-            }
-            int length = 0;
-            while( (length = generateNumber()) < 1000) {
-                length = generateNumber();
-            }
-            Barcode barcode = new Barcode("BLUE"+width+length+"B13P");
-            WorkOrder order = new WorkOrder(barcode, new Date(), "ONE", "TEST"+new Random().nextInt(9999));
-            fusionManager.checkout(order);
+
+            Intent i = new Intent(CheckoutActivity.this, ManualActivity.class);
+            startActivityForResult(i, MANUAL_ACTIVITY);
         }
     };
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    private int generateNumber() {
-        return new Random().nextInt(9999);
+        switch(requestCode) {
+            case MANUAL_ACTIVITY:
+                Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
     @Override
@@ -63,5 +66,5 @@ public class CheckoutActivity extends Activity {
         getMenuInflater().inflate(R.menu.checkout, menu);
         return true;
     }
-    
+
 }
