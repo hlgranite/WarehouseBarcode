@@ -8,10 +8,13 @@ import android.app.TabActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+
+import java.util.Comparator;
 
 /**
  * Main entrance for TabHost.
@@ -20,7 +23,7 @@ import android.widget.TabHost.TabSpec;
  */
 public class MainActivity extends TabActivity {
 
-    private static final int RESULT_SETTINGS = 1;
+    public static final int RESULT_SETTINGS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +81,50 @@ public class MainActivity extends TabActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        int currentTab = getTabHost().getCurrentTab();
+        switch(currentTab) {
+            case 0:
+//                menu.clear();
+//                inflater.inflate(R.menu.main, menu);
+//                break;
+            case 1:
+                menu.clear();
+                inflater.inflate(R.menu.history, menu);
+                break;
+            case 2:
+                menu.clear();
+                inflater.inflate(R.menu.balance, menu);
+                break;
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
 //            case R.id.action_refresh:
 //                Log.i("INFO", "Reset Fusion table");
 //                FusionManager.getInstance().reset();
 //                break;
+            case R.id.action_sort_quantity:
+                final ListView listView = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);//(ListView)findViewById(R.id.listView);
+                InventoryArrayAdapter adapter = (InventoryArrayAdapter)listView.getAdapter();
+                Log.i("INFO", "Sort stock by quantity");
+                adapter.sort(new Comparator<Stock>() {
+                    @Override
+                    public int compare(Stock lhs, Stock rhs) {
+                        return lhs.getBalance().compareTo(rhs.getBalance());
+                    }
+                });
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.action_sort_size:
+                break;
             case R.id.action_settings:
+                Log.i("INFO", "MainActivity.setting");
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivityForResult(i, RESULT_SETTINGS);
                 break;
