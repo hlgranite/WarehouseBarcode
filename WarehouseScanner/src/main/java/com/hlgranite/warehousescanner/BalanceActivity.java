@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class BalanceActivity extends Activity {
 
@@ -104,6 +105,12 @@ public class BalanceActivity extends Activity {
                 Log.i("INFO", "Set once for list adapter only");
 
                 final InventoryArrayAdapter adapter = new InventoryArrayAdapter(context, stocks);
+                adapter.sort(new Comparator<Stock>(){
+                    @Override
+                    public int compare(Stock lhs, Stock rhs) {
+                        return lhs.getCode().compareTo(rhs.getCode());
+                    }
+                });
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override

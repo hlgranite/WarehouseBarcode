@@ -122,6 +122,7 @@ public class MainActivity extends TabActivity {
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.action_sort_size:
+                // TODO: Sort by dimension
                 break;
             case R.id.action_settings:
                 Log.i("INFO", "MainActivity.setting");
