@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
@@ -79,9 +80,10 @@ public class MainActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.action_refresh:
-                FusionManager.getInstance().reset();
-                break;
+//            case R.id.action_refresh:
+//                Log.i("INFO", "Reset Fusion table");
+//                FusionManager.getInstance().reset();
+//                break;
             case R.id.action_settings:
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivityForResult(i, RESULT_SETTINGS);

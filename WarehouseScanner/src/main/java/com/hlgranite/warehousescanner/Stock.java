@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public class Stock {
 
+    protected FusionManager dataStore = FusionManager.getInstance();
+
     private String code;
     public String getCode() {
         return this.code;
@@ -22,24 +24,27 @@ public class Stock {
         return this.description;
     }
 
-    private String imageUrl; // TODO: Get smaller bitmap for this field in fusion table record to reduce loading time.
+    private String imageUrl;
+
+    /**
+     * TODO: Get smaller bitmap for this field in fusion table record to reduce loading time.
+     * @return
+     */
     public String getImageUrl() {
         return this.imageUrl;
     }
 
     private Integer balance;
     public Integer getBalance() {
-        // Calculate balance
-        ArrayList<Shipment> shipments = FusionManager.getInstance().getShipments();
-        ArrayList<WorkOrder> workOrders = FusionManager.getInstance().getWorkOrders();
 
+        // Calculate balance
         this.balance = 0;
-        for(Shipment shipment: shipments) {
+        for(Shipment shipment: dataStore.getShipments()) {
             if(shipment.getBarcode().getStockCode().equals(this.code)) {
                 this.balance += shipment.getQuantity();
             }
         }
-        for(WorkOrder workOrder: workOrders) {
+        for(WorkOrder workOrder: dataStore.getWorkOrders()) {
             if(workOrder.getBarcode().getStockCode().equals(this.code)) {
                 this.balance --;
             }
