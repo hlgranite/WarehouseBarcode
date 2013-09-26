@@ -1,27 +1,34 @@
 package com.hlgranite.warehousescanner;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 public class ManualActivity extends Activity {
 
     private Calendar calendar = Calendar.getInstance();
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // TODO: Make dateFormat as global variable
-    protected EditText editText;
+    private EditText editText;
+    private Spinner spinner;
+    private String customer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,22 @@ public class ManualActivity extends Activity {
         // set focus on barcode entry when popup
         EditText editText2 = (EditText)findViewById(R.id.editText2);
         editText2.requestFocus();
+
+        // bind customer into dropdownlist
+        spinner = (Spinner)findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                customer = (String)parent.getItemAtPosition(position);
+                Log.i("INFO", customer + " selected");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+        new RetrieveCustomer(this).execute();
     }
 
     protected DatePickerDialog.OnDateSetListener dateDialog = new DatePickerDialog.OnDateSetListener() {
@@ -64,7 +87,7 @@ public class ManualActivity extends Activity {
         }
     };
 
-    protected View.OnClickListener checkoutClick = new View.OnClickListener() {
+    protected Button.OnClickListener checkoutClick = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             // Set value into work order
@@ -72,9 +95,13 @@ public class ManualActivity extends Activity {
 
             try {
                 EditText editText2 = (EditText)findViewById(R.id.editText2);
+                EditText editText4 = (EditText)findViewById(R.id.editText4);
+
                 Barcode barcode = new Barcode(editText2.getText().toString());
-                WorkOrder order = new WorkOrder(barcode, dateFormat.parse(editText.getText().toString()), "ONE", "TEST"+new Random().nextInt(9999));
+                WorkOrder order = new WorkOrder(barcode, dateFormat.parse(editText.getText().toString()),
+                        customer, editText4.getText().toString());
                 FusionManager.getInstance().checkout(order);
+
                 setResult(Activity.RESULT_OK);
             } catch (ParseException e) {
                 Log.e("ERROR", e.getMessage());
@@ -90,19 +117,25 @@ public class ManualActivity extends Activity {
         return true;
     }
 
-    private class RetrieveCustomer extends AsyncTask<String, Void, ArrayList<Customer>> {
+    private class RetrieveCustomer extends AsyncTask<String, Void, ArrayList<String>> {
+        private Context context;
+
+        public RetrieveCustomer(Context context) {
+            this.context = context;
+        }
 
         @Override
-        protected ArrayList<Customer> doInBackground(String... params) {
+        protected ArrayList<String> doInBackground(String... params) {
             return FusionManager.getInstance().getCustomers();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Customer> customers) {
+        protected void onPostExecute(ArrayList<String> customers) {
             super.onPostExecute(customers);
             // TODO: Bind into customer spinner
-            //ArrayAdapter<Customer> adapter = new ArrayAdapter<Customer>(this, R.id.spinner, customers);
-
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManualActivity.this, android.R.layout.simple_spinner_dropdown_item, customers);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
         }
     }
     

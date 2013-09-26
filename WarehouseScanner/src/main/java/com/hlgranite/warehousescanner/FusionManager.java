@@ -48,9 +48,11 @@ public class FusionManager {
     private String auth = "";
     private final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
     private final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
-    private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk&pli";
+    private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";//&pli";
     private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
+    private final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
 
+    private ArrayList<Customer> customers;
     private ArrayList<Stock> stocks;
     private ArrayList<Shipment> shipments;
     private ArrayList<WorkOrder> workOrders;
@@ -131,6 +133,55 @@ public class FusionManager {
     }
 
     /**
+     * Return a collection of customer code.
+     * @return
+     */
+    public ArrayList<String> getCustomers() {
+
+        ArrayList<String> output = new ArrayList<String>();
+
+        String url = urlPrefix + "?sql=SELECT code FROM " + customerTableId + "&key=" + apiKey;
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
+        StringBuilder builder = new StringBuilder();
+        JSONObject object = null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+            reader.close();
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
+        }
+
+        Object o = object.get("rows");
+        if(o != null) {
+            JSONArray rows = (JSONArray)o;
+            for(int i=0;i<rows.size();i++) {
+                o = rows.get(i);
+                JSONArray obj = (JSONArray)o;
+                String code = obj.get(0).toString();
+                output.add(code);
+            }
+        }
+
+        return output;
+    }
+
+    /**
      * Get stock collection from web response.
      * @return
      */
@@ -183,6 +234,57 @@ public class FusionManager {
         }
 
         return this.stocks;
+    }
+
+    /**
+     * Insert a record into StockOuts fusion table.
+     * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
+     * @param order
+     */
+    public void checkout(WorkOrder order) {
+        try {
+            HttpPost post = new HttpPost(urlPrefix);
+
+            String sql = "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
+            sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS", order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
+            sql += ")";
+            Log.i("INFO", sql);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("sql", sql));
+            params.add(new BasicNameValuePair("key", apiKey));
+            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+            post.setHeader("Authorization", "GoogleLogin auth="+auth);
+
+            new PostWeb(post).execute();
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+
+    /**
+     * Add a new stock into fusion table.
+     * @param stock
+     */
+    public void addStock(Stock stock) {
+        try {
+            HttpPost post = new HttpPost(urlPrefix);
+
+            String sql = "INSERT INTO " + stockTableId + " (code,name,description,imageUrl) VALUES (";
+            sql += "'"  +stock.getCode() + "','" + stock.getName() + "','" + stock.getDescription() + "','" + stock.getImageUrl() + "'";
+            sql += ")";
+            Log.i("INFO", sql);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("sql", sql));
+            params.add(new BasicNameValuePair("key", apiKey));
+            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+            post.setHeader("Authorization", "GoogleLogin auth="+auth);
+
+            new PostWeb(post).execute();
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        }
     }
 
     public ArrayList<Shipment> getShipments() {
@@ -294,56 +396,6 @@ public class FusionManager {
         return this.workOrders;
     }
 
-    /**
-     * Insert a record into StockOuts fusion table.
-     * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
-     * @param order
-     */
-    public void checkout(WorkOrder order) {
-        try {
-            HttpPost post = new HttpPost(urlPrefix);
-
-            String sql = "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
-            sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS",order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
-            sql += ")";
-            Log.i("INFO", sql);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("sql", sql));
-            params.add(new BasicNameValuePair("key", apiKey));
-            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-            post.setEntity(ent);
-            post.setHeader("Authorization", "GoogleLogin auth="+auth);
-
-            new PostWeb(post).execute();
-        } catch(IOException e) {
-            Log.e("ERROR", e.getMessage());
-        }
-    }
-    /**
-     * Add a new stock into fusion table.
-     * @param stock
-     */
-    public void addStock(Stock stock) {
-        try {
-            HttpPost post = new HttpPost(urlPrefix);
-
-            String sql = "INSERT INTO " + stockTableId + " (code,name,description,imageUrl) VALUES (";
-            sql += "'"  +stock.getCode() + "','" + stock.getName() + "','" + stock.getDescription() + "','" + stock.getImageUrl() + "'";
-            sql += ")";
-            Log.i("INFO", sql);
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("sql", sql));
-            params.add(new BasicNameValuePair("key", apiKey));
-            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-            post.setEntity(ent);
-            post.setHeader("Authorization", "GoogleLogin auth="+auth);
-
-            new PostWeb(post).execute();
-        } catch(IOException e) {
-            Log.e("ERROR", e.getMessage());
-        }
-    }
-
     private class PostWeb extends AsyncTask<String, Void, HttpEntity> {
 
         HttpClient client = new DefaultHttpClient();
@@ -390,7 +442,7 @@ public class FusionManager {
     }
 
     /**
-     * Return date from a date string input.
+     * Return dateDialog from a dateDialog string input.
      * @param dateString
      * @return
      */

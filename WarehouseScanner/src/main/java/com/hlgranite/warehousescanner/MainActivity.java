@@ -67,7 +67,7 @@ public class MainActivity extends TabActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String email = sharedPreferences.getString("prefUsername", "NULL");
         String password = sharedPreferences.getString("prefPassword", "NULL");
-        Log.i("INFO", "Email: "+email+" Password: "+password);
+        Log.i("INFO", "Email: "+email);//+" Password: "+password);
         if(!email.isEmpty() && !password.isEmpty()) {
             new Authenticate().execute(email, password);
         }
