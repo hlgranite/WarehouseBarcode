@@ -44,7 +44,6 @@ public class CheckoutActivity extends Activity {
     protected View.OnClickListener manualClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             Intent i = new Intent(CheckoutActivity.this, ManualActivity.class);
             startActivityForResult(i, MANUAL_ACTIVITY);
         }
@@ -55,7 +54,10 @@ public class CheckoutActivity extends Activity {
 
         switch(requestCode) {
             case MANUAL_ACTIVITY:
-                Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
+                Log.i("INFO", "Result code: "+resultCode);
+                if(resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

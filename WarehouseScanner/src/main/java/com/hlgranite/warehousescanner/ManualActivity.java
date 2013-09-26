@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.Date;
 import java.util.Random;
@@ -19,6 +21,12 @@ public class ManualActivity extends Activity {
 
         Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(checkoutClick);
+
+        //EditText editText = (EditText)findViewById(R.id.editText);
+        // TODO: editText.setText(new Date().toString());
+
+        EditText editText4 = (EditText)findViewById(R.id.editText4);
+        editText4.setText("1");
     }
 
     protected View.OnClickListener checkoutClick = new View.OnClickListener() {
@@ -35,9 +43,14 @@ public class ManualActivity extends Activity {
             while( (length = generateNumber()) < 1000) {
                 length = generateNumber();
             }
-            Barcode barcode = new Barcode("BLUE"+width+length+"B13P");
+
+            EditText editText2 = (EditText)findViewById(R.id.editText2);
+
+            Barcode barcode = new Barcode(editText2.getText().toString());
             WorkOrder order = new WorkOrder(barcode, new Date(), "ONE", "TEST"+new Random().nextInt(9999));
             FusionManager.getInstance().checkout(order);
+
+            setResult(Activity.RESULT_OK);
             ManualActivity.this.finish();
         }
     };
