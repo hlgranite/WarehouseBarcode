@@ -20,12 +20,12 @@ import java.util.ArrayList;
  * Created by yeang-shing.then on 9/18/13.
  * http://www.vogella.com/articles/AndroidListView/article.html
  */
-public class InventoryArrayAdapter extends ArrayAdapter<Stock> {
+public class InventoryAdapter extends ArrayAdapter<Stock> {
     private final Context context;
     private final ArrayList<Stock> values;
     private ImageView imageView;
 
-    public InventoryArrayAdapter(Context context, ArrayList<Stock> values) {
+    public InventoryAdapter(Context context, ArrayList<Stock> values) {
         super(context, R.layout.layout_stock, values);
         this.context = context;
         this.values = values;

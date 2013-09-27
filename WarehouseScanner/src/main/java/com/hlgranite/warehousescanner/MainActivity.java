@@ -111,7 +111,7 @@ public class MainActivity extends TabActivity {
 //                break;
             case R.id.action_sort_quantity:
                 final ListView listView = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);//(ListView)findViewById(R.id.listView);
-                InventoryArrayAdapter adapter = (InventoryArrayAdapter)listView.getAdapter();
+                InventoryAdapter adapter = (InventoryAdapter)listView.getAdapter();
                 Log.i("INFO", "Sort stock by quantity");
                 adapter.sort(new Comparator<Stock>() {
                     @Override
