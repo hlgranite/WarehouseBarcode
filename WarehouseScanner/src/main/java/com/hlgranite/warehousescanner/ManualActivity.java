@@ -97,9 +97,11 @@ public class ManualActivity extends Activity {
                 EditText editText2 = (EditText)findViewById(R.id.editText2);
                 EditText editText4 = (EditText)findViewById(R.id.editText4);
 
+                Date date = dateFormat.parse(editText.getText().toString());
+                Date now = new Date();
+
                 Barcode barcode = new Barcode(editText2.getText().toString());
-                WorkOrder order = new WorkOrder(barcode, dateFormat.parse(editText.getText().toString()),
-                        customer, editText4.getText().toString());
+                WorkOrder order = new WorkOrder(barcode, date, customer, editText4.getText().toString());
                 FusionManager.getInstance().checkout(order);
 
                 setResult(Activity.RESULT_OK);
@@ -110,12 +112,13 @@ public class ManualActivity extends Activity {
         }
     };
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.manual, menu);
-        return true;
-    }
+// disable menu
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.manual, menu);
+//        return true;
+//    }
 
     private class RetrieveCustomer extends AsyncTask<String, Void, ArrayList<String>> {
         private Context context;
@@ -132,7 +135,7 @@ public class ManualActivity extends Activity {
         @Override
         protected void onPostExecute(ArrayList<String> customers) {
             super.onPostExecute(customers);
-            // TODO: Bind into customer spinner
+            // Bind into customer spinner
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManualActivity.this, android.R.layout.simple_spinner_dropdown_item, customers);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
