@@ -103,7 +103,6 @@ public class BalanceActivity extends Activity {
             final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 Log.i("INFO", "Set once for list adapter only");
-
                 final InventoryArrayAdapter adapter = new InventoryArrayAdapter(context, stocks);
                 adapter.sort(new Comparator<Stock>(){
                     @Override
@@ -123,7 +122,12 @@ public class BalanceActivity extends Activity {
             } else {
                 Log.i("INFO", "Repopulate");
                 InventoryArrayAdapter existing = (InventoryArrayAdapter)listView.getAdapter();
-                //final InventoryArrayAdapter adapter = new InventoryArrayAdapter(context, stocks);
+                existing.sort(new Comparator<Stock>(){
+                    @Override
+                    public int compare(Stock lhs, Stock rhs) {
+                        return lhs.getCode().compareTo(rhs.getCode());
+                    }
+                });
                 for(Stock stock: stocks) {
                     existing.add(stock);
                 }
