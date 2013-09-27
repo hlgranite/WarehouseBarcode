@@ -97,11 +97,16 @@ public class ManualActivity extends Activity {
                 EditText editText2 = (EditText)findViewById(R.id.editText2);
                 EditText editText4 = (EditText)findViewById(R.id.editText4);
 
-                Date date = dateFormat.parse(editText.getText().toString());
                 Date now = new Date();
+                Date date = dateFormat.parse(editText.getText().toString());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                cal.add(Calendar.HOUR_OF_DAY, now.getHours());
+                cal.add(Calendar.MINUTE, now.getMinutes());
+                cal.add(Calendar.SECOND, now.getSeconds());
 
                 Barcode barcode = new Barcode(editText2.getText().toString());
-                WorkOrder order = new WorkOrder(barcode, date, customer, editText4.getText().toString());
+                WorkOrder order = new WorkOrder(barcode, cal.getTime(), customer, editText4.getText().toString());
                 FusionManager.getInstance().checkout(order);
 
                 setResult(Activity.RESULT_OK);
