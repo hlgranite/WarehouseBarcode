@@ -70,6 +70,9 @@ public class FusionManager {
         this.workOrders = null;
         this.shipments = null;
     }
+    public void resetWorkOrder() {
+        this.workOrders = null;
+    }
 
     /**
      * Always return a same datastore object.
@@ -350,7 +353,7 @@ public class FusionManager {
             return this.workOrders;
         }
 
-        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + "&key=" + apiKey;
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC &key=" + apiKey;
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(validateUrl(url));
         HttpResponse response = null;

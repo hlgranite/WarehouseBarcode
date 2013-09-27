@@ -16,6 +16,8 @@ import java.util.Comparator;
 
 public class BalanceActivity extends Activity {
 
+    private ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,7 @@ public class BalanceActivity extends Activity {
         super.onResume();
         Log.i("INFO", "BalanceActivity.onResume()");
 
-        final ListView listView = (ListView)findViewById(R.id.listView);
+        listView = (ListView)findViewById(R.id.listView);
         if(listView.getAdapter() != null) {
             InventoryAdapter existing = (InventoryAdapter)listView.getAdapter();
             existing.clear();
@@ -99,7 +101,6 @@ public class BalanceActivity extends Activity {
         protected void onPostExecute(ArrayList<Stock> stocks) {
             super.onPostExecute(stocks);
 
-            final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 Log.i("INFO", "Set once for list adapter only");
                 final InventoryAdapter adapter = new InventoryAdapter(context, stocks);
