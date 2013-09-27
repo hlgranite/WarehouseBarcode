@@ -9,6 +9,7 @@
     <string name="title_activity_history">History</string>
     <string name="title_activity_balance">Balance</string>
     <string name="title_activity_setting">Setting</string>
+    <string name="title_activity_about">About</string>
     <string name="checkout">CHECKOUT</string>
     <string name="scan">SCAN</string>
     <string name="manual">MANUAL</string>
@@ -26,4 +27,5 @@
     <string name="to">To</string>
     <string name="reference">Reference</string>
     <string name="qty">Qty</string>
+    <string name="version">Version</string>
 </resources>

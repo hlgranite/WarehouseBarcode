@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/pref_user_profile"
-        android:icon="@drawable/ic_accounts">
+    <PreferenceCategory
+        android:title="@string/pref_user_profile"
+        android:icon="@android:drawable/ic_lock_lock">
         <EditTextPreference
             android:title="@string/pref_user_name"
             android:summary="@string/pref_user_name_summary"
@@ -12,7 +13,15 @@
             android:title="@string/pref_password"
             android:summary="@string/pref_password_summary"
             android:key="prefPassword"/>
-
     </PreferenceCategory>
+
+    <Preference
+        android:title="Help"
+        android:icon="@android:drawable/ic_menu_help">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hlgranite.warehousescanner"
+            android:targetClass="com.hlgranite.warehousescanner.AboutActivity" />
+    </Preference>
 
 </PreferenceScreen>
