@@ -176,7 +176,7 @@ public class FusionManager {
             for(int i=0;i<rows.size();i++) {
                 o = rows.get(i);
                 JSONArray obj = (JSONArray)o;
-                String code = obj.get(0).toString();
+                String code = obj.get(0).toString().trim();
                 output.add(code);
             }
         }
@@ -228,10 +228,10 @@ public class FusionManager {
             for(int i=0;i<rows.size();i++) {
                 o = rows.get(i);
                 JSONArray obj = (JSONArray)o;
-                String code = obj.get(0).toString();
-                String name = obj.get(1).toString();
-                String description = obj.get(2).toString();
-                String imageUrl = obj.get(3).toString();
+                String code = obj.get(0).toString().trim();
+                String name = obj.get(1).toString().trim();
+                String description = obj.get(2).toString().trim();
+                String imageUrl = obj.get(3).toString().trim();
                 this.stocks.add(new Stock(code,name,description,imageUrl));
             }
         }
@@ -334,14 +334,14 @@ public class FusionManager {
                 o = rows.get(i);
                 JSONArray obj = (JSONArray)o;
 
-                String number = obj.get(0).toString();
-                number += obj.get(1).toString();
-                number += obj.get(2).toString();
-                number += obj.get(3).toString();
-                number += obj.get(4).toString();
+                String code = obj.get(0).toString().trim();// stock code
+                int length = Integer.parseInt(obj.get(1).toString().trim()); // length
+                int width = Integer.parseInt(obj.get(2).toString().trim()); // width
+                String shipment = obj.get(3).toString().trim();
+                String warehouse = obj.get(4).toString().trim();
 
-                Barcode barcode = new Barcode(number);
-                int quantity = Integer.parseInt(obj.get(5).toString());
+                Barcode barcode = new Barcode(code, width, length, shipment, warehouse);
+                int quantity = Integer.parseInt(obj.get(5).toString().trim());
                 this.shipments.add(new Shipment(barcode, quantity));
             }
         }
@@ -390,11 +390,11 @@ public class FusionManager {
                 o = rows.get(i);
                 JSONArray obj = (JSONArray)o;
 
-                String number = obj.get(0).toString();
+                String number = obj.get(0).toString().trim();
                 Barcode barcode = new Barcode(number);
                 Date date = parseDate(obj.get(1).toString());
-                String customer = obj.get(2).toString();
-                String reference = obj.get(3).toString();
+                String customer = obj.get(2).toString().trim();
+                String reference = obj.get(3).toString().trim();
                 this.workOrders.add(new WorkOrder(barcode, date, customer, reference));
             }
         }

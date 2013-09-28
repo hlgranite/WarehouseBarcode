@@ -47,11 +47,11 @@ public class Barcode {
             this.shipment = number.substring(12,15);
         if(number.length() >= 16)
             this.warehouseCode = number.substring(15,16);
-//        Log.i("INFO", "Stock: " + stockCode);
-//        Log.i("INFO", "Width: " + width);
-//        Log.i("INFO", "Length: " + length);
-//        Log.i("INFO", "Shipment: " + shipment);
-//        Log.i("INFO", "Warehouse: " + warehouseCode);
+        Log.i("INFO", "Stock: " + stockCode);
+        Log.i("INFO", "Width: " + width);
+        Log.i("INFO", "Length: " + length);
+        Log.i("INFO", "Shipment: " + shipment);
+        Log.i("INFO", "Warehouse: " + warehouseCode);
     }
     public String getNumber() {
         return this.number;
@@ -70,6 +70,6 @@ public class Barcode {
 
     @Override
     public String toString() {
-        return this.stockCode+this.width.toString()+this.length.toString()+this.shipment+this.warehouseCode;
+        return this.stockCode+String.format("%04d", this.width)+String.format("%04d", this.length)+this.shipment+this.warehouseCode;
     }
 }
