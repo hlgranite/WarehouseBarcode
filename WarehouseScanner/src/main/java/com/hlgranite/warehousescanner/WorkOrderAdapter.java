@@ -30,12 +30,13 @@ public class WorkOrderAdapter extends ArrayAdapter<WorkOrder> {
 
         TextView textView = (TextView)rowView.findViewById(R.id.textView);
         textView.setText(order.getBarcode().toString());
-
-        TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
-        textView2.setText(order.getCustomer().toString());
-
         TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
         textView3.setText(order.getDate().toString());
+
+        TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
+        textView2.setText(order.getCustomer());
+        TextView textView4 = (TextView)rowView.findViewById(R.id.textView4);
+        textView4.setText(order.getReference());
 
         return rowView;
     }
