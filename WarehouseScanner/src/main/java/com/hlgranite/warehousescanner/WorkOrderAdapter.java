@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
@@ -30,8 +31,9 @@ public class WorkOrderAdapter extends ArrayAdapter<WorkOrder> {
 
         TextView textView = (TextView)rowView.findViewById(R.id.textView);
         textView.setText(order.getBarcode().toString());
+        // see http://developer.android.com/reference/java/text/SimpleDateFormat.html
         TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
-        textView3.setText(order.getDate().toString());
+        textView3.setText(DateFormat.getDateTimeInstance().format(order.getDate()));
 
         TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
         textView2.setText(order.getCustomer());
