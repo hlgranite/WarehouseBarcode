@@ -35,13 +35,18 @@ public class InventoryAdapter extends ArrayAdapter<Stock> {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.layout_stock, parent, false);
 
+        Stock stock = values.get(position);
+
         TextView textView = (TextView)rowView.findViewById(R.id.textView);
-        textView.setText(values.get(position).getName());
+        textView.setText(stock.getName());
 
-        TextView textView2 = (TextView)rowView.findViewById(R.id.balance);
-        textView2.setText(values.get(position).getBalance().toString());
+        TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
+        textView2.setText(stock.getBalance().toString());
 
-        String url = values.get(position).getImageUrl();
+        TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
+        textView3.setText(stock.getArea().toString());
+
+        String url = stock.getImageUrl();
         if(url != null && !url.isEmpty()) {
             imageView = (ImageView)rowView.findViewById(R.id.imageView);
             new DownloadImageTask().execute(url);
