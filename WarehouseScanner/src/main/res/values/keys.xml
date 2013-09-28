@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="history" type="id">history</item>
-    <item name="balance" type="id">balance</item>
-    <item name="checkout" type="id">checkout</item>
-    <item name="scan" type="id">scan</item>
-    <item name="manual" type="id">manual</item>
+    <string name="api"></string>
 </resources>
