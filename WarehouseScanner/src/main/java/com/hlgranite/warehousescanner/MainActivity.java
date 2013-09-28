@@ -86,9 +86,9 @@ public class MainActivity extends TabActivity {
         int currentTab = getTabHost().getCurrentTab();
         switch(currentTab) {
             case 0:
-//                menu.clear();
-//                inflater.inflate(R.menu.main, menu);
-//                break;
+                menu.clear();
+                inflater.inflate(R.menu.checkout, menu);
+                break;
             case 1:
                 menu.clear();
                 inflater.inflate(R.menu.history, menu);
@@ -105,7 +105,7 @@ public class MainActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-//            case R.id.action_refresh:
+// TODO: case R.id.action_refresh:
 //                Log.i("INFO", "Reset Fusion table");
 //                FusionManager.getInstance().reset();
 //                break;

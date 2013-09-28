@@ -1,14 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:orderInCategory="10"
+        android:showAsAction="never" />
     <item android:id="@+id/action_sort_quantity"
         android:title="@string/action_sort_quantity"
-        android:orderInCategory="10"
+        android:orderInCategory="20"
         android:showAsAction="never" />
     <item android:id="@+id/action_sort_size"
         android:title="@string/action_sort_size"
-        android:orderInCategory="10"
+        android:orderInCategory="21"
         android:showAsAction="never" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
+    <item android:id="@+id/help"
+        android:orderInCategory="900"
+        android:title="@string/help" />
 </menu>
