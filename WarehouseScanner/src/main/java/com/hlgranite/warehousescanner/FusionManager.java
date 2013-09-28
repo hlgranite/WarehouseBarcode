@@ -244,13 +244,16 @@ public class FusionManager {
      * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java
      * @param order
      */
-    public void checkout(WorkOrder order) {
+    public void checkout(WorkOrder order, int quantity) {
         try {
             HttpPost post = new HttpPost(urlPrefix);
 
-            String sql = "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
-            sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS", order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
-            sql += ")";
+            String sql = "";
+            for(int i=0;i<quantity;i++) {
+                sql += "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
+                sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS", order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
+                sql += ");";
+            }
             Log.i("INFO", sql);
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("sql", sql));

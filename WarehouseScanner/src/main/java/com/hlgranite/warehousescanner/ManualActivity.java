@@ -95,8 +95,10 @@ public class ManualActivity extends Activity {
 
             try {
                 EditText editText2 = (EditText)findViewById(R.id.editText2);
+                EditText editText3 = (EditText)findViewById(R.id.editText3);
                 EditText editText4 = (EditText)findViewById(R.id.editText4);
 
+                // get date value and tight to time as well.
                 Date now = new Date();
                 Date date = dateFormat.parse(editText.getText().toString());
                 Calendar cal = Calendar.getInstance();
@@ -106,8 +108,8 @@ public class ManualActivity extends Activity {
                 cal.add(Calendar.SECOND, now.getSeconds());
 
                 Barcode barcode = new Barcode(editText2.getText().toString());
-                WorkOrder order = new WorkOrder(barcode, cal.getTime(), customer, editText4.getText().toString());
-                FusionManager.getInstance().checkout(order);
+                WorkOrder order = new WorkOrder(barcode, cal.getTime(), customer, editText3.getText().toString());
+                FusionManager.getInstance().checkout(order, Integer.parseInt(editText4.getText().toString()));
 
                 setResult(Activity.RESULT_OK);
             } catch (ParseException e) {
