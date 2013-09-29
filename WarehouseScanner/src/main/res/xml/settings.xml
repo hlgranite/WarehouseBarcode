@@ -15,6 +15,17 @@
             android:key="prefPassword"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/pref_unit_profile">
+        <ListPreference
+            android:title="@string/pref_unit"
+            android:summary="@string/pref_unit_summary"
+            android:entries="@array/unitOptions"
+            android:entryValues="@array/unitValues"
+            android:defaultValue="m"
+            android:key="prefUnit" />
+        </PreferenceCategory>
+
     <Preference
         android:title="Help"
         android:icon="@android:drawable/ic_menu_help">

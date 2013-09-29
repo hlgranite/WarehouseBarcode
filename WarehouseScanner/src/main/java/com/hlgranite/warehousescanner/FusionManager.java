@@ -42,6 +42,8 @@ public class FusionManager {
     private static FusionManager instance;
 
     private String apiKey = null;
+    private CharSequence unit = "m"; // default unit to use
+
     /**
      * Auth token for read/write fusion table
      */
@@ -93,6 +95,14 @@ public class FusionManager {
      */
     public void setApi(String api) {
         this.apiKey = api;
+    }
+
+    public void setUnit(CharSequence unit) {
+        this.unit = unit;
+    }
+    public CharSequence getUnit() {
+        //Log.i("INFO", "Unit: "+this.unit);
+        return this.unit;
     }
 
     /**

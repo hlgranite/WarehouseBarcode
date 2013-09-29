@@ -38,12 +38,16 @@ public class Area {
     }
 
     public String toSquareFeet() {
-        double inchRatio = 25.4;
-        inchRatio = inchRatio*inchRatio;
-        double feetRatio = 12;
-        feetRatio = feetRatio*feetRatio;
+//        double inchRatio = 25.4;
+//        inchRatio = inchRatio*inchRatio;
+//        double feetRatio = 12;
+//        feetRatio = feetRatio*feetRatio;
 
-        double output = area/inchRatio/feetRatio;
-        return output + "f" + SQUARE;
+        double rate = 1000/25.4;//inchRatio*feetRatio;
+        rate = rate*rate;
+        rate = rate/144;
+
+        double output = area*rate/1000000;
+        return String.format("%.1f%n", output) + "f" + SQUARE;
     }
 }
