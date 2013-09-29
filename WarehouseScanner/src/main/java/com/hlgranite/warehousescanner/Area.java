@@ -4,6 +4,12 @@ package com.hlgranite.warehousescanner;
  * Created by yeang-shing.then on 9/29/13.
  */
 public class Area {
+
+    /**
+     * Square character.
+     */
+    private final char SQUARE = '\u00B2';
+
     private long area;
     public long getArea() {
         return this.area;
@@ -28,7 +34,7 @@ public class Area {
     public String toString() {
         double output = 0;
         output = area/1000000;
-        return output + "m" + '\u00B2';
+        return output + "m" + SQUARE;
     }
 
     public String toSquareFeet() {
@@ -38,6 +44,6 @@ public class Area {
         feetRatio = feetRatio*feetRatio;
 
         double output = area/inchRatio/feetRatio;
-        return output + "f" + '\u00B2';
+        return output + "f" + SQUARE;
     }
 }
