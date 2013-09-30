@@ -42,7 +42,7 @@ public class HistoryActivity extends Activity {
 
         @Override
         protected ArrayList<WorkOrder> doInBackground(String... params) {
-            return FusionManager.getInstance().getWorkOrders();
+            return FusionManager.getInstance().getWorkOrders(50);
         }
 
         @Override

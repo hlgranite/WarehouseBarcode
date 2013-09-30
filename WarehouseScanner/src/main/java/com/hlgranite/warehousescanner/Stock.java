@@ -46,7 +46,7 @@ public class Stock {
                 area.add(totalArea);
             }
         }
-        for(WorkOrder workOrder: dataStore.getWorkOrders()) {
+        for(WorkOrder workOrder: dataStore.getWorkOrders(0)) {
             if(workOrder.getBarcode().getStockCode().equals(this.code)) {
                 this.balance --;
 

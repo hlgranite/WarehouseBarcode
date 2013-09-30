@@ -364,14 +364,23 @@ public class FusionManager {
         return this.shipments;
     }
 
-    public ArrayList<WorkOrder> getWorkOrders() {
+    /**
+     * Retrieve history of work order after checkout.
+     * @return
+     */
+    public ArrayList<WorkOrder> getWorkOrders(int limit) {
         if(this.workOrders == null) {
             this.workOrders = new ArrayList<WorkOrder>();
         } else {
             return this.workOrders;
         }
 
-        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC &key=" + apiKey;
+        String url = "";
+        if(limit > 0) {
+            url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC&key=" + apiKey;
+        } else {
+            url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC LIMIT 50&key=" + apiKey;
+        }
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(validateUrl(url));
         HttpResponse response = null;

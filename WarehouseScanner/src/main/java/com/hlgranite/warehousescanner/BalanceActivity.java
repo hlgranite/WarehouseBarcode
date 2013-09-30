@@ -78,7 +78,8 @@ public class BalanceActivity extends Activity {
 
         @Override
         protected ArrayList<WorkOrder> doInBackground(String... params) {
-            return FusionManager.getInstance().getWorkOrders();
+            FusionManager.getInstance().resetWorkOrder();
+            return FusionManager.getInstance().getWorkOrders(0);
         }
 
         @Override
