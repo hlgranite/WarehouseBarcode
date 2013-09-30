@@ -1,7 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.util.Log;
-
 /**
  * Created by yeang-shing.then on 9/18/13.
  */
@@ -45,7 +43,6 @@ public class Stock {
                 this.balance += shipment.getQuantity();
 
                 long totalArea = shipment.getQuantity()*shipment.getBarcode().getWidth()*shipment.getBarcode().getLength();
-                Log.i("INFO", shipment.getBarcode().getStockCode()+": " + totalArea);
                 area.add(totalArea);
             }
         }
