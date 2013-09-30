@@ -15,7 +15,11 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Main entrance for TabHost.
@@ -128,14 +132,40 @@ public class MainActivity extends TabActivity {
             case R.id.action_sort_area:
                 Log.i("INFO", "Sort by area");
                 final ExpandableListView listView = (ExpandableListView)getTabHost().getCurrentView().findViewById(R.id.expandableListView);
-                InventoryExpandableAdapter adapter = (InventoryExpandableAdapter)listView.getExpandableListAdapter();
-                adapter.notifyDataSetChanged();
+                if(listView.getAdapter() != null) {
+
+                    List<Stock> stocks = FusionManager.getInstance().getStocks();
+                    Collections.sort(stocks, new AreaComparator());
+                    Map<Stock, Map<Barcode,Integer>> children = new HashMap<Stock, Map<Barcode, Integer>>();
+                    for(Stock stock: stocks) {
+                        stock.getBalance();
+                        children.put(stock, stock.getItems());
+                    }
+
+                    InventoryExpandableAdapter adapter = (InventoryExpandableAdapter)listView.getExpandableListAdapter();
+                    adapter.setGroupList(stocks);
+                    adapter.setChildList(children);
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case R.id.action_sort_quantity:
                 Log.i("INFO", "Sort by quantity");
                 final ExpandableListView listView2 = (ExpandableListView)getTabHost().getCurrentView().findViewById(R.id.expandableListView);
-                InventoryExpandableAdapter adapter2 = (InventoryExpandableAdapter)listView2.getExpandableListAdapter();
-                adapter2.notifyDataSetChanged();
+                if(listView2.getAdapter() != null) {
+
+                    List<Stock> stocks = FusionManager.getInstance().getStocks();
+                    Collections.sort(stocks, new QuantityComparator());
+                    Map<Stock, Map<Barcode,Integer>> children = new HashMap<Stock, Map<Barcode, Integer>>();
+                    for(Stock stock: stocks) {
+                        stock.getBalance();
+                        children.put(stock, stock.getItems());
+                    }
+
+                    InventoryExpandableAdapter adapter = (InventoryExpandableAdapter)listView2.getExpandableListAdapter();
+                    adapter.setGroupList(stocks);
+                    adapter.setChildList(children);
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case R.id.action_sort_size:
                 // TODO: Sort by dimension
