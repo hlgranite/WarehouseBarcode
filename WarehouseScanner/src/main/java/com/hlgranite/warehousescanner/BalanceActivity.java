@@ -122,15 +122,15 @@ public class BalanceActivity extends Activity {
             } else {
                 Log.i("INFO", "Repopulate");
                 InventoryAdapter existing = (InventoryAdapter)listView.getAdapter();
+                for(Stock stock: stocks) {
+                    existing.add(stock);
+                }
                 existing.sort(new Comparator<Stock>(){
                     @Override
                     public int compare(Stock lhs, Stock rhs) {
                         return lhs.getCode().compareTo(rhs.getCode());
                     }
                 });
-                for(Stock stock: stocks) {
-                    existing.add(stock);
-                }
                 existing.notifyDataSetChanged();
             }
         }
