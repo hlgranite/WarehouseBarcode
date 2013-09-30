@@ -284,6 +284,31 @@ public class FusionManager {
     }
 
     /**
+     * Rollback checkout wrongly by delete a record from StockOut table.
+     * @param id
+     */
+    public void removeWorkOrder(long id) {
+        if(id == 0) return;
+
+        try {
+            HttpPost post = new HttpPost(urlPrefix);
+
+            String sql = "DELETE FROM " + stockOutTableId + " WHERE ROWID='"+id+"'";
+            Log.i("INFO", sql);
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("sql", sql));
+            params.add(new BasicNameValuePair("key", apiKey));
+            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
+            post.setEntity(ent);
+            post.setHeader("Authorization", "GoogleLogin auth="+auth);
+
+            new PostWeb(post).execute();
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+    }
+
+    /**
      * Add a new stock into fusion table.
      * @param stock
      */
@@ -376,7 +401,7 @@ public class FusionManager {
             return this.workOrders;
         }
 
-        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC ";
+        String url = urlPrefix + "?sql=SELECT ROWID,barcode,date,sold,reference FROM " + stockOutTableId + " ORDER BY date DESC ";
         if(limit > 0) url += "LIMIT 50 ";
         url += "&key=" + apiKey;
 
@@ -413,12 +438,13 @@ public class FusionManager {
                 o = rows.get(i);
                 JSONArray obj = (JSONArray)o;
 
-                String number = obj.get(0).toString().trim();
+                long id = Long.parseLong(obj.get(0).toString());
+                String number = obj.get(1).toString().trim();
                 Barcode barcode = new Barcode(number);
-                Date date = parseDate(obj.get(1).toString());
-                String customer = obj.get(2).toString().trim();
-                String reference = obj.get(3).toString().trim();
-                this.workOrders.add(new WorkOrder(barcode, date, customer, reference));
+                Date date = parseDate(obj.get(2).toString());
+                String customer = obj.get(3).toString().trim();
+                String reference = obj.get(4).toString().trim();
+                this.workOrders.add(new WorkOrder(id, barcode, date, customer, reference));
             }
         }
 

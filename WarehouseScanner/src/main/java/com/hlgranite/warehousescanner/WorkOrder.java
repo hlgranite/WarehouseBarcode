@@ -6,6 +6,10 @@ import java.util.Date;
  * Created by yeang-shing.then on 9/24/13.
  */
 public class WorkOrder {
+    private long id;
+    public long getId() {
+        return this.id;
+    }
     private Barcode barcode;
     public Barcode getBarcode() {
         return this.barcode;
@@ -26,13 +30,15 @@ public class WorkOrder {
         return this.reference;
     }
 
-    public WorkOrder(Barcode barcode, Date date, String customer, String reference) {
+    public WorkOrder(long id, Barcode barcode, Date date, String customer, String reference) {
+        this.id = id;
         this.barcode = barcode;
         this.date = date;
         this.customer = customer;
         this.reference = reference;
     }
-    public WorkOrder(String barcode, Date date, String customer, String reference) {
+    public WorkOrder(long id, String barcode, Date date, String customer, String reference) {
+        this.id = id;
         this.barcode = new Barcode(barcode);
         this.date = date;
         this.customer = customer;

@@ -5,7 +5,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -14,11 +19,16 @@ public class HistoryActivity extends Activity {
 
     /** Determine focus back on screen after click on menu */
     private boolean isBack = true;
+    /** selected index in lsitView */
+    private int selectedIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
+        ListView listView = (ListView)findViewById(R.id.listView);
+        registerForContextMenu(listView);
     }
 
     @Override
@@ -60,6 +70,22 @@ public class HistoryActivity extends Activity {
             if(listView.getAdapter() == null) {
                 WorkOrderAdapter adapter = new WorkOrderAdapter(context, workOrders);
                 listView.setAdapter(adapter);
+                listView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        //v.setSelected(true);
+                        return true;
+                    }
+                });
+                listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        selectedIndex = position;
+                        Log.i("INFO", "Selected position: "+position);
+                        //view.setSelected(true);
+                        return false;
+                    }
+                });
             } else if(listView.getAdapter().getCount() == 0) {
                 WorkOrderAdapter existing = (WorkOrderAdapter)listView.getAdapter();
                 for(WorkOrder workOrder: workOrders) {
@@ -77,5 +103,31 @@ public class HistoryActivity extends Activity {
         getMenuInflater().inflate(R.menu.history, menu);
         return true;
     }
-    
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.action_delete:
+                ListView listView = (ListView)findViewById(R.id.listView);
+                // Fail always null: WorkOrder workOrder = (WorkOrder)listView.getSelectedItem();
+                if(selectedIndex > -1) { //if(workOrder != null)
+                    WorkOrderAdapter adapter = (WorkOrderAdapter)listView.getAdapter();
+                    long id = adapter.getItem(selectedIndex).getId();
+                    Log.i("INFO", "remove selected WorkOrder:"+id);
+                    FusionManager.getInstance().removeWorkOrder(id);
+                }
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
 }

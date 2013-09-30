@@ -108,7 +108,7 @@ public class ManualActivity extends Activity {
                 cal.add(Calendar.SECOND, now.getSeconds());
 
                 Barcode barcode = new Barcode(editText2.getText().toString());
-                WorkOrder order = new WorkOrder(barcode, cal.getTime(), customer, editText3.getText().toString());
+                WorkOrder order = new WorkOrder(0, barcode, cal.getTime(), customer, editText3.getText().toString());
                 FusionManager.getInstance().checkout(order, Integer.parseInt(editText4.getText().toString()));
 
                 setResult(Activity.RESULT_OK);
