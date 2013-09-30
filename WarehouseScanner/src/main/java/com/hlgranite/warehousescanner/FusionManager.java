@@ -42,7 +42,7 @@ public class FusionManager {
     private static FusionManager instance;
 
     private String apiKey = null;
-    private CharSequence unit = "m"; // default unit to use
+    private CharSequence unit = Unit.Meter;
 
     /**
      * Auth token for read/write fusion table
@@ -366,6 +366,7 @@ public class FusionManager {
 
     /**
      * Retrieve history of work order after checkout.
+     * @param limit Number of row to return. 0 for no limit.
      * @return
      */
     public ArrayList<WorkOrder> getWorkOrders(int limit) {
@@ -375,12 +376,10 @@ public class FusionManager {
             return this.workOrders;
         }
 
-        String url = "";
-        if(limit > 0) {
-            url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC&key=" + apiKey;
-        } else {
-            url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC LIMIT 50&key=" + apiKey;
-        }
+        String url = urlPrefix + "?sql=SELECT * FROM " + stockOutTableId + " ORDER BY date DESC ";
+        if(limit > 0) url += "LIMIT 50 ";
+        url += "&key=" + apiKey;
+
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(validateUrl(url));
         HttpResponse response = null;

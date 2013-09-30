@@ -106,6 +106,12 @@ public class MainActivity extends TabActivity {
         switch(item.getItemId()) {
             case R.id.action_refresh_history:
                 Log.i("INFO", "Reset history");
+                FusionManager.getInstance().reset();
+                final ListView listViewH = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
+                if(listViewH.getAdapter() != null) {
+                    WorkOrderAdapter existing = (WorkOrderAdapter)listViewH.getAdapter();
+                    existing.clear();
+                }
                 break;
             case R.id.action_refresh_balance:
                 Log.i("INFO", "Reset Fusion table");
@@ -115,8 +121,6 @@ public class MainActivity extends TabActivity {
                     InventoryAdapter existing = (InventoryAdapter)listView0.getAdapter();
                     existing.clear();
                 }
-
-                getTabHost().getCurrentView().bringToFront();
                 break;
             case R.id.action_sort_area:
                 Log.i("INFO", "Sort by area");

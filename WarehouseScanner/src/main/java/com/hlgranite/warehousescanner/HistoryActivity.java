@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
 
@@ -11,7 +12,8 @@ import java.util.ArrayList;
 
 public class HistoryActivity extends Activity {
 
-    private ListView listView;
+    /** Determine focus back on screen after click on menu */
+    private boolean isBack = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +25,19 @@ public class HistoryActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        listView = (ListView)findViewById(R.id.listView);
-        if(listView.getAdapter() != null) {
-            WorkOrderAdapter existing = (WorkOrderAdapter)listView.getAdapter();
-            existing.clear();
-        }
-
-        FusionManager.getInstance().resetWorkOrder();
+        Log.i("INFO", "HistoryActivity.onResume");
         new RetrieveHistory(this).execute();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.i("INFO", "HistoryActivity.onWindowFocusChanged");
+
+        isBack = !isBack;
+        if(isBack) {
+            new RetrieveHistory(this).execute();
+        }
     }
 
     private class RetrieveHistory extends AsyncTask<String, Void, ArrayList<WorkOrder>> {
@@ -49,10 +56,11 @@ public class HistoryActivity extends Activity {
         protected void onPostExecute(ArrayList<WorkOrder> workOrders) {
             super.onPostExecute(workOrders);
 
+            final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 WorkOrderAdapter adapter = new WorkOrderAdapter(context, workOrders);
                 listView.setAdapter(adapter);
-            } else {
+            } else if(listView.getAdapter().getCount() == 0) {
                 WorkOrderAdapter existing = (WorkOrderAdapter)listView.getAdapter();
                 for(WorkOrder workOrder: workOrders) {
                     existing.add(workOrder);
