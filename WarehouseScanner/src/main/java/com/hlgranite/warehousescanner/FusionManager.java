@@ -50,7 +50,7 @@ public class FusionManager {
     private String auth = "";
     private final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
     private final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
-    private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";//&pli";
+    private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";
     private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
     private final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
 
@@ -60,7 +60,7 @@ public class FusionManager {
     private ArrayList<WorkOrder> workOrders;
 
     protected FusionManager() {
-
+        this.isAuthenticated = false;
     }
 
     /**
@@ -105,6 +105,10 @@ public class FusionManager {
         return this.unit;
     }
 
+    private boolean isAuthenticated;
+    public boolean getAuthenticate() {
+        return this.isAuthenticated;
+    }
     /**
      * Authenticate with google account to retrieve auth token.
      * @param email
@@ -134,6 +138,7 @@ public class FusionManager {
             while(null != (line = reader.readLine())) {
                 if(line.startsWith("Auth=")) {
                     this.auth = line.replace("Auth=","");
+                    this.isAuthenticated = true;
                     Log.i("INFO", "Auth: "+line);
                 }
                 builder.append(line);

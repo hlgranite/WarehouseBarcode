@@ -1,6 +1,6 @@
 package com.hlgranite.warehousescanner;
 
-import java.util.ArrayList;
+import android.util.Log;
 
 /**
  * Created by yeang-shing.then on 9/18/13.
@@ -43,13 +43,18 @@ public class Stock {
         for(Shipment shipment: dataStore.getShipments()) {
             if(shipment.getBarcode().getStockCode().equals(this.code)) {
                 this.balance += shipment.getQuantity();
-                area.add(shipment.getQuantity()*shipment.getBarcode().getWidth()*shipment.getBarcode().getLength());
+
+                long totalArea = shipment.getQuantity()*shipment.getBarcode().getWidth()*shipment.getBarcode().getLength();
+                Log.i("INFO", shipment.getBarcode().getStockCode()+": " + totalArea);
+                area.add(totalArea);
             }
         }
         for(WorkOrder workOrder: dataStore.getWorkOrders()) {
             if(workOrder.getBarcode().getStockCode().equals(this.code)) {
                 this.balance --;
-                area.deduct(workOrder.getBarcode().getWidth()*workOrder.getBarcode().getLength());
+
+                long totalArea = workOrder.getBarcode().getWidth()*workOrder.getBarcode().getLength();
+                area.deduct(totalArea);
             }
         }
 

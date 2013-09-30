@@ -24,7 +24,6 @@ import java.util.Comparator;
 public class MainActivity extends TabActivity {
 
     public static final int RESULT_SETTINGS = 100;
-    private CharSequence unit = "m";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +57,15 @@ public class MainActivity extends TabActivity {
         tabHost.addTab(scanSpec);
         tabHost.addTab(historySpec);
         tabHost.addTab(balanceSpec);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i("INFO", "MainActivity onStart");
-
+        FusionManager.getInstance().setApi(getResources().getString(R.string.api));
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String unit = sharedPreferences.getString("prefUnit", Unit.Meter);
+        FusionManager.getInstance().setUnit(unit);
+
         String email = sharedPreferences.getString("prefUsername", "NULL");
         String password = sharedPreferences.getString("prefPassword", "NULL");
-        unit = sharedPreferences.getString("prefUnit", "m");
-        Log.i("INFO", "Email: "+email);//+" Password: "+password);
+        Log.i("INFO", "Email: "+email);
         Log.i("INFO", "Unit: "+unit);
         if(!email.isEmpty() && !password.isEmpty()) {
             new Authenticate().execute(email, password);
@@ -140,14 +136,20 @@ public class MainActivity extends TabActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("INFO", "MainActiviy.onActiviyResult");
 
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        String email = sharedPreferences.getString("prefUsername", "NULL");
-//        String password = sharedPreferences.getString("prefPassword", "NULL");
-//        Log.i("INFO", "Email: "+email+" Password: "+password);
         switch(requestCode) {
             case RESULT_SETTINGS:
-                //new Authenticate().execute(email, password);
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                String unit = sharedPreferences.getString("prefUnit", Unit.Meter);
+                FusionManager.getInstance().setUnit(unit);
+                if(!FusionManager.getInstance().getAuthenticate()) {
+                    String email = sharedPreferences.getString("prefUsername", "NULL");
+                    String password = sharedPreferences.getString("prefPassword", "NULL");
+                    Log.i("INFO", "Email: "+email);
+                    Log.i("INFO", "Unit: "+unit);
+                    new Authenticate().execute(email, password);
+                }
                 break;
         }
     }
@@ -156,11 +158,7 @@ public class MainActivity extends TabActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-            // Setup a singleton datastore object
-            FusionManager fusionManager = FusionManager.getInstance();
-            fusionManager.setUnit(unit);
-            fusionManager.setApi(getResources().getString(R.string.api));
-            fusionManager.authenticate(params[0], params[1]);
+            FusionManager.getInstance().authenticate(params[0], params[1]);
             return null;
         }
     }

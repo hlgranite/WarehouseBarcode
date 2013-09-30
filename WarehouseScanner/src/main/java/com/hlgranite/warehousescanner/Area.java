@@ -1,5 +1,7 @@
 package com.hlgranite.warehousescanner;
 
+import java.math.BigDecimal;
+
 /**
  * Created by yeang-shing.then on 9/29/13.
  */
@@ -10,44 +12,64 @@ public class Area {
      */
     private final char SQUARE = '\u00B2';
 
-    private long area;
-    public long getArea() {
-        return this.area;
+    private long value;
+    public long getValue() {
+        return this.value;
     }
 
     public Area() {
-        area = 0;
+        this.value = 0;
     }
 
     /**
      * Add area.
-     * @param area Value in mm²
+     * @param area Value in mm².
      */
     public void add(long area) {
-        this.area += area;
+        this.value += area;
     }
+
+    /**
+     * Remove area
+     * @param area Value in mm².
+     */
     public void deduct(long area) {
-        this.area -= area;
+        this.value -= area;
     }
 
     @Override
     public String toString() {
-        double output = 0;
-        output = area/1000000;
-        return output + "m" + SQUARE;
+        // result = 16800000 / 1000000 will produce integer value 16.0
+        // HACK: result = 16800000 / (double)1000000 will produce correct decimal place 16.8
+        double result = value / (double)1000000;
+        return round(result,2) + Unit.Meter + SQUARE;
     }
 
+    /**
+     * Convert area to square feet unit.
+     * @return
+     */
     public String toSquareFeet() {
-//        double inchRatio = 25.4;
-//        inchRatio = inchRatio*inchRatio;
-//        double feetRatio = 12;
-//        feetRatio = feetRatio*feetRatio;
-
-        double rate = 1000/25.4;//inchRatio*feetRatio;
-        rate = rate*rate;
-        rate = rate/144;
-
-        double output = area*rate/1000000;
-        return String.format("%.1f%n", output) + "f" + SQUARE;
+        //see http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
+        //String.format("%.2f%n", output) + "ft" + SQUARE;
+        double rate = 25.4*25.4*12*12;
+        double result = value/rate;
+        return round(result,2) + Unit.Feet + SQUARE;
     }
+
+    /**
+     * Round up value to desired decimal places.
+     * See http://stackoverflow.com/questions/2808535/round-a-double-to-2-significant-figures-after-decimal-point
+     * @param value
+     * @param places
+     * @return
+     */
+    private double round(double value, int places) {
+        if(places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
+    }
+
 }

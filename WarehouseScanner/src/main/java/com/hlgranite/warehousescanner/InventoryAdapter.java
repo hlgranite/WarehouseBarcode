@@ -24,13 +24,11 @@ public class InventoryAdapter extends ArrayAdapter<Stock> {
     private final Context context;
     private final ArrayList<Stock> values;
     private ImageView imageView;
-    private CharSequence unit;
 
     public InventoryAdapter(Context context, ArrayList<Stock> values) {
         super(context, R.layout.layout_stock, values);
         this.context = context;
         this.values = values;
-        this.unit = FusionManager.getInstance().getUnit();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -46,10 +44,12 @@ public class InventoryAdapter extends ArrayAdapter<Stock> {
         textView2.setText(stock.getBalance().toString());
 
         TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
-        if(unit.equals("m")) {
-            textView3.setText(stock.getArea().toString());
-        } else {
-            textView3.setText(stock.getArea().toSquareFeet());
+        if(stock.getArea().getValue() > 0) {
+            if(FusionManager.getInstance().getUnit().equals(Unit.Feet)) {
+                textView3.setText(stock.getArea().toSquareFeet());
+            } else {
+                textView3.setText(stock.getArea().toString());
+            }
         }
 
         String url = stock.getImageUrl();

@@ -7,6 +7,6 @@
 
     <string-array name="unitValues">
         <item>m</item>
-        <item>f</item>
+        <item>ft</item>
     </string-array>
 </resources>

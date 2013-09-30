@@ -1,9 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.util.Log;
-
-import java.util.Date;
-
 /**
  * Created by yeang-shing.then on 9/19/13.
  */
@@ -14,13 +10,13 @@ public class Barcode {
         return this.stockCode;
     }
 
-    private Integer width;
-    public Integer getWidth() {
+    private int width;
+    public int getWidth() {
         return this.width;
     }
 
-    private Integer length;
-    public Integer getLength() {
+    private int length;
+    public int getLength() {
         return this.length;
     }
 
@@ -60,7 +56,7 @@ public class Barcode {
     public Barcode(String number) {
         setNumber(number);
     }
-    public Barcode(String stockCode, Integer width, Integer length, String shipment, String warehouse) {
+    public Barcode(String stockCode, int width, int length, String shipment, String warehouse) {
         this.stockCode = stockCode;
         this.width = width;
         this.length = length;
