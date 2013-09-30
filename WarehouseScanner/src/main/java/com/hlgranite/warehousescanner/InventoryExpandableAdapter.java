@@ -1,6 +1,10 @@
 package com.hlgranite.warehousescanner;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +12,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.URL;
 import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +28,7 @@ import java.util.Map;
 public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
 
     private Context context;
+    private ImageView imageView;
 
     private List<Stock> headerList;
     public void clearGroup() {
@@ -103,11 +110,11 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
             }
         }
 
-//        TODO: String url = stock.getImageUrl();
-//        if(url != null && !url.isEmpty()) {
-//            imageView = (ImageView)rowView.findViewById(R.id.imageView);
-//            new DownloadImageTask().execute(url);
-//        }
+        String url = stock.getImageUrl();
+        if(url != null && !url.isEmpty()) {
+            imageView = (ImageView)groupView.findViewById(R.id.imageView);
+            new DownloadImageTask().execute(url);
+        }
 
         return groupView;
     }
@@ -154,6 +161,32 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
+    }
+
+    /**
+     * Download image from internet asynchronously.
+     */
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+
+            Bitmap bitmap = null;
+            try{
+                URL request = new URL(params[0]);
+                bitmap = BitmapFactory.decodeStream(request.openConnection().getInputStream());
+                return bitmap;
+            } catch(IOException ex) {
+                Log.e("ERROR", "Could not load bitmap from: " + params[0]);
+                return bitmap;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
 }
