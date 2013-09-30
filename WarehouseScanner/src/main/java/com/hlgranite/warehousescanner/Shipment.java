@@ -29,4 +29,5 @@ public class Shipment {
         // todo: this.date = date;
         this.quantity = quantity;
     }
+
 }

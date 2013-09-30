@@ -35,7 +35,7 @@ public class BalanceActivity extends Activity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        Log.i("INFO", "BalanceActivity.onWindowFocusChanged");
+        Log.i("INFO", "BalanceActivity.onWindowFocusChanged()");
 
         isBack = !isBack;
         if(isBack) {

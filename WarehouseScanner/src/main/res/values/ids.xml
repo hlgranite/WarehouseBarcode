@@ -5,4 +5,5 @@
     <item name="checkout" type="id">checkout</item>
     <item name="scan" type="id">scan</item>
     <item name="manual" type="id">manual</item>
+
 </resources>

@@ -36,7 +36,7 @@ public class CheckoutActivity extends Activity {
         @Override
         public void onClick(View v) {
             // TODO: Launch camera for scan barcode
-            Log.i("INFO", "Launch camera for scan barcode");
+            Log.i("INFO", "Launch camera for scan barcode ");
         }
     };
 

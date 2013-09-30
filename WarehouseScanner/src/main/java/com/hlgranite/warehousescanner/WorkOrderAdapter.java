@@ -24,6 +24,7 @@ public class WorkOrderAdapter extends ArrayAdapter<WorkOrder> {
     }
 
     public View getView(int position, View contentView, ViewGroup parent) {
+
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.layout_workorder, parent, false);
 
