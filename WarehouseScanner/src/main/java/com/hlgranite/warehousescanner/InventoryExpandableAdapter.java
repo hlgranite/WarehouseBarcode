@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.security.KeyPair;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +22,22 @@ import java.util.Map;
 public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
 
     private Context context;
+
     private List<Stock> headerList;
+    public void clearGroup() {
+        this.headerList.clear();
+    }
+    public void setGroupList(List<Stock> stocks) {
+        this.headerList = stocks;
+    }
+
     private Map<Stock, Map<Barcode,Integer>> childList;
+    public void clearChildList() {
+        this.childList.clear();
+    }
+    public void setChildList(Map<Stock, Map<Barcode,Integer>> child) {
+        this.childList = child;
+    }
 
     public InventoryExpandableAdapter(Context context, List<Stock> headerList, Map<Stock, Map<Barcode, Integer>> childList) {
         this.context = context;

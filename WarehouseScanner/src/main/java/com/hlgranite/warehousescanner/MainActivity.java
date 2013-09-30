@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -116,38 +117,24 @@ public class MainActivity extends TabActivity {
             case R.id.action_refresh_balance:
                 Log.i("INFO", "Reset Fusion table");
                 FusionManager.getInstance().reset();
-                final ListView listView0 = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
+                final ExpandableListView listView0 = (ExpandableListView)getTabHost().getCurrentView().findViewById(R.id.expandableListView);
                 if(listView0.getAdapter() != null) {
-                    InventoryAdapter existing = (InventoryAdapter)listView0.getAdapter();
-                    existing.clear();
+                    InventoryExpandableAdapter existing = (InventoryExpandableAdapter)listView0.getExpandableListAdapter();
+                    existing.clearGroup();
+                    existing.clearChildList();
+                    existing.notifyDataSetChanged();
                 }
                 break;
             case R.id.action_sort_area:
                 Log.i("INFO", "Sort by area");
-                final ListView listView = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
-                InventoryAdapter adapter = (InventoryAdapter)listView.getAdapter();
-                adapter.sort(new Comparator<Stock>() {
-                    @Override
-                    public int compare(Stock lhs, Stock rhs) {
-                        lhs.getBalance();
-                        rhs.getBalance();
-                        Long area1 = lhs.getArea().getValue();
-                        Long area2 = rhs.getArea().getValue();
-                        return area1.compareTo(area2);
-                    }
-                });
+                final ExpandableListView listView = (ExpandableListView)getTabHost().getCurrentView().findViewById(R.id.expandableListView);
+                InventoryExpandableAdapter adapter = (InventoryExpandableAdapter)listView.getExpandableListAdapter();
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.action_sort_quantity:
                 Log.i("INFO", "Sort by quantity");
-                final ListView listView2 = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
-                InventoryAdapter adapter2 = (InventoryAdapter)listView2.getAdapter();
-                adapter2.sort(new Comparator<Stock>() {
-                    @Override
-                    public int compare(Stock lhs, Stock rhs) {
-                        return lhs.getBalance().compareTo(rhs.getBalance());
-                    }
-                });
+                final ExpandableListView listView2 = (ExpandableListView)getTabHost().getCurrentView().findViewById(R.id.expandableListView);
+                InventoryExpandableAdapter adapter2 = (InventoryExpandableAdapter)listView2.getExpandableListAdapter();
                 adapter2.notifyDataSetChanged();
                 break;
             case R.id.action_sort_size:

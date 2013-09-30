@@ -110,25 +110,18 @@ public class BalanceActivity extends Activity {
         protected void onPostExecute(ArrayList<Stock> stocks) {
             super.onPostExecute(stocks);
 
-            Collections.sort(stocks, new StockCodeComparator());
-
-            //final ListView listView = (ListView)findViewById(R.id.listView);
             final ExpandableListView listView = (ExpandableListView)findViewById(R.id.expandableListView);
             if(listView.getAdapter() == null) {
+
                 Log.i("INFO", "Set once for list adapter only");
-                //final InventoryAdapter adapter = new InventoryAdapter(context, stocks);
+                Collections.sort(stocks, new StockCodeComparator());
                 Map<Stock, Map<Barcode,Integer>> children = new HashMap<Stock, Map<Barcode, Integer>>();
                 for(Stock stock: stocks) {
                     stock.getBalance();
                     children.put(stock, stock.getItems());
                 }
+
                 final InventoryExpandableAdapter adapter = new InventoryExpandableAdapter(context, stocks, children);
-//                adapter.sort(new Comparator<Stock>() {
-//                    @Override
-//                    public int compare(Stock lhs, Stock rhs) {
-//                        return lhs.getCode().compareTo(rhs.getCode());
-//                    }
-//                });
                 listView.setAdapter(adapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -139,19 +132,19 @@ public class BalanceActivity extends Activity {
                     }
                 });
             } else if(listView.getAdapter().getCount() == 0) {
+
                 Log.i("INFO", "Repopulate");
-                //InventoryAdapter existing = (InventoryAdapter)listView.getAdapter();
-                //final InventoryExpandableAdapter adapter = new InventoryExpandableAdapter(context, stocks);
-//                for(Stock stock: stocks) {
-//                    //adapter.add(stock);
-//                }
-//                adapter.sort(new Comparator<Stock>(){
-//                    @Override
-//                    public int compare(Stock lhs, Stock rhs) {
-//                        return lhs.getCode().compareTo(rhs.getCode());
-//                    }
-//                });
-                //adapter.notifyDataSetChanged();
+                Collections.sort(stocks, new StockCodeComparator());
+                Map<Stock, Map<Barcode,Integer>> children = new HashMap<Stock, Map<Barcode, Integer>>();
+                for(Stock stock: stocks) {
+                    stock.getBalance();
+                    children.put(stock, stock.getItems());
+                }
+
+                InventoryExpandableAdapter adapter = (InventoryExpandableAdapter)listView.getExpandableListAdapter();
+                adapter.setGroupList(stocks);
+                adapter.setChildList(children);
+                adapter.notifyDataSetChanged();
             }
         }
     }
