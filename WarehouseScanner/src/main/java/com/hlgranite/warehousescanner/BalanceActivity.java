@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class BalanceActivity extends Activity {
-
-    private ListView listView;
+    /** Determine focus back on screen after click on menu */
+    private boolean isBack = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +27,20 @@ public class BalanceActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
         Log.i("INFO", "BalanceActivity.onResume()");
-
-        listView = (ListView)findViewById(R.id.listView);
-        if(listView.getAdapter() != null) {
-            InventoryAdapter existing = (InventoryAdapter)listView.getAdapter();
-            existing.clear();
-        }
-
-        // Force to get again shipment & workorder into memory
-        FusionManager.getInstance().reset();
         new RetrieveShipment(this).execute();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.i("INFO", "BalanceActivity.onWindowFocusChanged");
+
+        isBack = !isBack;
+        if(isBack) {
+            new RetrieveShipment(this).execute();
+        }
     }
 
     @Override
@@ -101,10 +104,11 @@ public class BalanceActivity extends Activity {
         protected void onPostExecute(ArrayList<Stock> stocks) {
             super.onPostExecute(stocks);
 
+            final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 Log.i("INFO", "Set once for list adapter only");
                 final InventoryAdapter adapter = new InventoryAdapter(context, stocks);
-                adapter.sort(new Comparator<Stock>(){
+                adapter.sort(new Comparator<Stock>() {
                     @Override
                     public int compare(Stock lhs, Stock rhs) {
                         return lhs.getCode().compareTo(rhs.getCode());
@@ -114,12 +118,12 @@ public class BalanceActivity extends Activity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                        final Stock item = (Stock)parent.getItemAtPosition(position);
+                        final Stock item = (Stock) parent.getItemAtPosition(position);
                         Toast.makeText(getApplicationContext(), item.getDescription(), Toast.LENGTH_LONG)
                                 .show();
                     }
                 });
-            } else {
+            } else if(listView.getAdapter().getCount() == 0) {
                 Log.i("INFO", "Repopulate");
                 InventoryAdapter existing = (InventoryAdapter)listView.getAdapter();
                 for(Stock stock: stocks) {

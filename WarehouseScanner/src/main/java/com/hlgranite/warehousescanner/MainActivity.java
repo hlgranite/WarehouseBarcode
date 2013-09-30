@@ -104,10 +104,20 @@ public class MainActivity extends TabActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-// TODO: case R.id.action_refresh:
-//                Log.i("INFO", "Reset Fusion table");
-//                FusionManager.getInstance().reset();
-//                break;
+            case R.id.action_refresh_history:
+                Log.i("INFO", "Reset history");
+                break;
+            case R.id.action_refresh_balance:
+                Log.i("INFO", "Reset Fusion table");
+                FusionManager.getInstance().reset();
+                final ListView listView0 = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
+                if(listView0.getAdapter() != null) {
+                    InventoryAdapter existing = (InventoryAdapter)listView0.getAdapter();
+                    existing.clear();
+                }
+
+                getTabHost().getCurrentView().bringToFront();
+                break;
             case R.id.action_sort_area:
                 Log.i("INFO", "Sort by area");
                 final ListView listView = (ListView)getTabHost().getCurrentView().findViewById(R.id.listView);
