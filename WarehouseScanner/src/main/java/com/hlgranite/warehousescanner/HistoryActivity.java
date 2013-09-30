@@ -1,5 +1,6 @@
 package com.hlgranite.warehousescanner;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,8 +20,10 @@ public class HistoryActivity extends Activity {
 
     /** Determine focus back on screen after click on menu */
     private boolean isBack = true;
-    /** selected index in lsitView */
+    /** selected index in listView */
     private int selectedIndex = -1;
+
+    // todo: private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +66,16 @@ public class HistoryActivity extends Activity {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //dialog = ProgressDialog.show(context, "Please wait...", "Retrieving data...");
+        }
+
+        @Override
         protected void onPostExecute(ArrayList<WorkOrder> workOrders) {
             super.onPostExecute(workOrders);
 
+            //if(dialog != null) dialog.dismiss();
             final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 WorkOrderAdapter adapter = new WorkOrderAdapter(context, workOrders);
@@ -123,6 +133,11 @@ public class HistoryActivity extends Activity {
                     long id = adapter.getItem(selectedIndex).getId();
                     Log.i("INFO", "remove selected WorkOrder:"+id);
                     FusionManager.getInstance().removeWorkOrder(id);
+
+                    // force to auto refresh after deletion
+                    isBack = false;
+                    //FusionManager.getInstance().resetWorkOrder();
+                    //new RetrieveHistory(this).execute();
                 }
                 return true;
             default:

@@ -375,8 +375,8 @@ public class FusionManager {
                 JSONArray obj = (JSONArray)o;
 
                 String code = obj.get(0).toString().trim();// stock code
-                int length = Integer.parseInt(obj.get(1).toString().trim()); // length
-                int width = Integer.parseInt(obj.get(2).toString().trim()); // width
+                int width = Integer.parseInt(obj.get(1).toString().trim()); // length
+                int length = Integer.parseInt(obj.get(2).toString().trim()); // width
                 String shipment = obj.get(3).toString().trim();
                 String warehouse = obj.get(4).toString().trim();
 

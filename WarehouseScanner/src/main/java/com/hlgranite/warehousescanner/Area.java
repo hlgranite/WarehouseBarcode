@@ -20,6 +20,9 @@ public class Area {
     public Area() {
         this.value = 0;
     }
+    public Area(long area) {
+        this.value = area;
+    }
 
     /**
      * Add area.

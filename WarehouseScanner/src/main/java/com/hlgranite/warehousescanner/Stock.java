@@ -1,5 +1,8 @@
 package com.hlgranite.warehousescanner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by yeang-shing.then on 9/18/13.
  */
@@ -24,6 +27,11 @@ public class Stock {
 
     private String imageUrl;
 
+    private Map<Barcode, Integer> items;
+    public Map<Barcode, Integer> getItems() {
+        return items;
+    }
+
     /**
      * TODO: Get smaller bitmap for this field in fusion table record to reduce loading time.
      * @return
@@ -38,20 +46,41 @@ public class Stock {
         // Calculate balance
         this.balance = 0;
         this.area = new Area();
+        this.items = new HashMap<Barcode, Integer>();
         for(Shipment shipment: dataStore.getShipments()) {
-            if(shipment.getBarcode().getStockCode().equals(this.code)) {
-                this.balance += shipment.getQuantity();
+            Barcode barcode = shipment.getBarcode();
+            if(barcode.getStockCode().equals(this.code)) {
+                int qty = shipment.getQuantity();
+                if(this.items.containsKey(barcode)) {
+                    int oldQty = items.get(barcode);
+                    this.items.remove(barcode);
+                    this.items.put(barcode,qty+oldQty);
+                } else {
+                    this.items.put(barcode, qty);
+                }
 
-                long totalArea = shipment.getQuantity()*shipment.getBarcode().getWidth()*shipment.getBarcode().getLength();
+                this.balance += qty;
+                long totalArea = qty * barcode.getWidth() * barcode.getLength();
                 area.add(totalArea);
             }
         }
         for(WorkOrder workOrder: dataStore.getWorkOrders(0)) {
             if(workOrder.getBarcode().getStockCode().equals(this.code)) {
-                this.balance --;
+                Barcode barcode = workOrder.getBarcode();
 
-                long totalArea = workOrder.getBarcode().getWidth()*workOrder.getBarcode().getLength();
-                area.deduct(totalArea);
+                if(this.items.containsKey(barcode)) {
+                    int oldQty = items.get(barcode);
+                    oldQty--;
+                    this.items.remove(barcode);
+                    this.items.put(barcode,oldQty);
+
+                    this.balance --;
+                    long totalArea = barcode.getWidth() * barcode.getLength();
+                    this.area.deduct(totalArea);
+                }
+
+                // if not contains in item meaning user checkout wrong barcode
+                // all deduct quantity must be a valid barcode.
             }
         }
 
@@ -72,6 +101,7 @@ public class Stock {
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.items = new HashMap<Barcode, Integer>();
     }
 
     @Override
