@@ -62,10 +62,25 @@ public class Barcode {
         this.length = length;
         this.shipment = shipment;
         this.warehouseCode = warehouse;
+        this.number = toString();
     }
 
     @Override
     public String toString() {
         return this.stockCode+String.format("%04d", this.width)+String.format("%04d", this.length)+this.shipment+this.warehouseCode;
     }
+
+    //<editor-fold desc="Determine uniqueness when calling Collections.contains">
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        Barcode b = (Barcode)obj;
+        return toString().equals(b.toString());
+    }
+    //</editor-fold>
 }

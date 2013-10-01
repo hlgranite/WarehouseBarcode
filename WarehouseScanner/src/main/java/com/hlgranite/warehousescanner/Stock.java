@@ -67,7 +67,6 @@ public class Stock {
         for(WorkOrder workOrder: dataStore.getWorkOrders(0)) {
             if(workOrder.getBarcode().getStockCode().equals(this.code)) {
                 Barcode barcode = workOrder.getBarcode();
-
                 if(this.items.containsKey(barcode)) {
                     int oldQty = items.get(barcode);
                     oldQty--;

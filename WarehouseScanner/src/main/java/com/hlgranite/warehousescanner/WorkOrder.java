@@ -44,4 +44,5 @@ public class WorkOrder {
         this.customer = customer;
         this.reference = reference;
     }
+
 }
