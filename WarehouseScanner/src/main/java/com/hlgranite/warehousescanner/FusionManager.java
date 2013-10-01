@@ -1,5 +1,6 @@
 package com.hlgranite.warehousescanner;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -22,16 +23,13 @@ import org.json.simple.parser.ParseException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yeang-shing.then on 9/18/13.
@@ -55,12 +53,22 @@ public class FusionManager {
     private final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
 
     private ArrayList<Customer> customers;
-    private ArrayList<Stock> stocks;
     private ArrayList<Shipment> shipments;
     private ArrayList<WorkOrder> workOrders;
+    private ArrayList<Stock> stocks;
+    private Map<String, Bitmap> stockImages;
+
+    /**
+     * Return a collection map of stock images.
+     * @return
+     */
+    public Map<String, Bitmap> getStockImage() {
+        return this.stockImages;
+    }
 
     protected FusionManager() {
         this.isAuthenticated = false;
+        this.stockImages = new HashMap<String, Bitmap>();
     }
 
     /**
@@ -254,6 +262,11 @@ public class FusionManager {
         return this.stocks;
     }
 
+    public void addStockImage(String stockCode, Bitmap bitmap) {
+        if(!this.stockImages.containsKey(stockCode)) {
+            this.stockImages.put(stockCode, bitmap);
+        }
+    }
     /**
      * Insert a record into StockOuts fusion table.
      * Source: https://github.com/jedld/GiNote/blob/master/src/com/dayosoft/utils/FusionTableService.java

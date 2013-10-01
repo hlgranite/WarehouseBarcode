@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
+ * Obsoleted.
  * Created by yeang-shing.then on 9/18/13.
  * http://www.vogella.com/articles/AndroidListView/article.html
  */

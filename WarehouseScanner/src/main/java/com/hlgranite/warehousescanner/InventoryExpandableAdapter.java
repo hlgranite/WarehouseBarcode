@@ -14,9 +14,6 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,10 +107,16 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        String url = stock.getImageUrl();
-        if(url != null && !url.isEmpty()) {
-            imageView = (ImageView)groupView.findViewById(R.id.imageView);
-            new DownloadImageTask().execute(url);
+        imageView = (ImageView)groupView.findViewById(R.id.imageView);
+        Map<String, Bitmap> images = FusionManager.getInstance().getStockImage();
+        if(images.containsKey(stock.getCode())) {
+            Bitmap bitmap = images.get(stock.getCode());
+            imageView.setImageBitmap(bitmap);
+        } else {
+            String url = stock.getImageUrl();
+            if(url != null && !url.isEmpty()) {
+                new DownloadImageTask().execute(stock.getCode(), url);
+            }
         }
 
         return groupView;
@@ -167,17 +170,19 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
      * Download image from internet asynchronously.
      */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private String stockCode;
 
         @Override
         protected Bitmap doInBackground(String... params) {
 
             Bitmap bitmap = null;
             try{
-                URL request = new URL(params[0]);
+                stockCode = params[0].toString();
+                URL request = new URL(params[1]);
                 bitmap = BitmapFactory.decodeStream(request.openConnection().getInputStream());
                 return bitmap;
             } catch(IOException ex) {
-                Log.e("ERROR", "Could not load bitmap from: " + params[0]);
+                Log.e("ERROR", "Could not load bitmap from: " + params[1]);
                 return bitmap;
             }
         }
@@ -185,6 +190,7 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            FusionManager.getInstance().addStockImage(stockCode, bitmap);
             imageView.setImageBitmap(bitmap);
         }
     }
