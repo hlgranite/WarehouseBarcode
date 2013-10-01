@@ -55,8 +55,10 @@ public class Stock {
                     int oldQty = items.get(barcode);
                     this.items.remove(barcode);
                     this.items.put(barcode,qty+oldQty);
+                    barcode.setLastUpdated(shipment.getDate());
                 } else {
                     this.items.put(barcode, qty);
+                    barcode.setLastUpdated(shipment.getDate());
                 }
 
                 this.balance += qty;
@@ -72,6 +74,7 @@ public class Stock {
                     oldQty--;
                     this.items.remove(barcode);
                     this.items.put(barcode,oldQty);
+                    barcode.setLastUpdated(workOrder.getDate());
 
                     this.balance --;
                     long totalArea = barcode.getWidth() * barcode.getLength();

@@ -1,5 +1,7 @@
 package com.hlgranite.warehousescanner;
 
+import java.util.Date;
+
 /**
  * Created by yeang-shing.then on 9/19/13.
  */
@@ -53,6 +55,11 @@ public class Barcode {
         return this.number;
     }
 
+    private Date lastUpdated;
+    public Date getLastUpdated() {
+        return this.lastUpdated;
+    }
+
     public Barcode(String number) {
         setNumber(number);
     }
@@ -63,6 +70,20 @@ public class Barcode {
         this.shipment = shipment;
         this.warehouseCode = warehouse;
         this.number = toString();
+    }
+
+    /**
+     * Keep the last updated date either shipment or checkout date.
+     * @param date
+     */
+    public void setLastUpdated(Date date) {
+        if(this.lastUpdated == null) {
+            this.lastUpdated = date;
+        } else {
+            if(date.compareTo(this.lastUpdated) > 0) {
+                this.lastUpdated = date;
+            }
+        }
     }
 
     @Override

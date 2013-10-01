@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -136,26 +137,35 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
         View rowView = inflater.inflate(R.layout.layout_item, parent, false);
 
         Stock stock = headerList.get(groupPosition);
-        Map<Barcode, Integer> pair = childList.get(stock);// (Map<Barcode, Integer>)getChild(groupPosition, childPosition);
-        //Barcode barcode = (Barcode)childList.get(stock);
+        Map<Barcode, Integer> pair = childList.get(stock);
 
         int i = 0;
         for(Barcode barcode: pair.keySet()) {
             if(i == childPosition) {
                 TextView textView = (TextView)rowView.findViewById(R.id.textView);
-                textView.setText(barcode.toString());
+                textView.setText(barcode.getStockCode());
+                TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
+                textView2.setText(String.format("%04d", barcode.getWidth())+String.format("%04d", barcode.getLength()));
+                TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
+                textView3.setText(barcode.getShipment()+barcode.getWarehouse());
 
                 Integer qty =  pair.get(barcode);
-                TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
-                textView2.setText(qty.toString());
+                TextView textView4 = (TextView)rowView.findViewById(R.id.textView4);
+                textView4.setText(qty.toString());
 
-                TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
+                // show last updated date either shipment or checkout date
+                if(barcode.getLastUpdated() != null) {
+                    TextView textView5 = (TextView)rowView.findViewById(R.id.textView5);
+                    textView5.setText(DateFormat.getDateTimeInstance().format(barcode.getLastUpdated()));
+                }
+
+                TextView textView6 = (TextView)rowView.findViewById(R.id.textView6);
                 Area area = new Area(qty * barcode.getWidth() * barcode.getLength());
                 if(area.getValue() > 0) {
                     if(FusionManager.getInstance().getUnit().equals(Unit.Feet)) {
-                        textView3.setText(area.toSquareFeet());
+                        textView6.setText(area.toSquareFeet());
                     } else {
-                        textView3.setText(area.toString());
+                        textView6.setText(area.toString());
                     }
                 }
 
