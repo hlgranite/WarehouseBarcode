@@ -24,7 +24,21 @@
             android:entryValues="@array/unitValues"
             android:defaultValue="m"
             android:key="prefUnit" />
-        </PreferenceCategory>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_notification">
+        <EditTextPreference
+            android:title="@string/pref_danger_area"
+            android:summary="@string/pref_danger_area_summary"
+            android:inputType="number"
+            android:key="prefDangerArea" />
+        <EditTextPreference
+            android:title="@string/pref_danger_quantity"
+            android:summary="@string/pref_danger_quantity_summary"
+            android:inputType="number"
+            android:key="prefDangerQuantity" />
+    </PreferenceCategory>
 
     <Preference
         android:title="Help"

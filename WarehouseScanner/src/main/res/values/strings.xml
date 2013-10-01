@@ -22,10 +22,15 @@
     <string name="pref_user_name">Set username</string>
     <string name="pref_user_name_summary">Set your username</string>
     <string name="pref_password">Set password</string>
+    <string name="pref_password_summary">Set your password</string>
     <string name="pref_unit_profile">Unit</string>
     <string name="pref_unit">Unit</string>
     <string name="pref_unit_summary">Choose Unit</string>
-    <string name="pref_password_summary">Set your password</string>
+    <string name="pref_notification">Notification</string>
+    <string name="pref_danger_area">Danger Level Area</string>
+    <string name="pref_danger_area_summary">Set danger level(m²)</string>
+    <string name="pref_danger_quantity">Danger Level Quantity</string>
+    <string name="pref_danger_quantity_summary">Set danger level(pcs)</string>
     <string name="help">Help</string>
     <string name="title_activity_manual">Manual Checkout</string>
     <string name="barcode">Barcode</string>

@@ -1,15 +1,18 @@
 package com.hlgranite.warehousescanner;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -95,17 +98,21 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
         TextView textView = (TextView)groupView.findViewById(R.id.textView);
         textView.setText(stock.getName());
 
+        Integer balance = stock.getBalance();
         TextView textView2 = (TextView)groupView.findViewById(R.id.textView2);
-        textView2.setText(stock.getBalance().toString());
+        textView2.setText(balance.toString());
 
+        Long balanceArea = 0L;
         TextView textView3 = (TextView)groupView.findViewById(R.id.textView3);
         if(stock.getArea().getValue() > 0) {
+            balanceArea = stock.getArea().getValue();
             if(FusionManager.getInstance().getUnit().equals(Unit.Feet)) {
                 textView3.setText(stock.getArea().toSquareFeet());
             } else {
                 textView3.setText(stock.getArea().toString());
             }
         }
+        highlight(groupView, balance, balanceArea);
 
         imageView = (ImageView)groupView.findViewById(R.id.imageView);
         Map<String, Bitmap> images = FusionManager.getInstance().getStockImage();
@@ -151,6 +158,8 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
                         textView3.setText(area.toString());
                     }
                 }
+
+                highlight(rowView, qty, area.getValue());
                 break;
             }
             i++;
@@ -193,6 +202,44 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
             FusionManager.getInstance().addStockImage(stockCode, bitmap);
             imageView.setImageBitmap(bitmap);
         }
+    }
+
+    /**
+     * Highlight in holo red if meet danger level.
+     * @param rowView
+     * @param qty
+     * @param area
+     */
+    private void highlight(View rowView, Integer qty, Long area) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(rowView.getContext());
+        Long minArea = parseLong(sharedPreferences.getString("prefDangerArea", "0"));
+        double meter2 = area / (double)1000000;
+        if(meter2 <= minArea) {
+            LinearLayout linearLayout = (LinearLayout)rowView.findViewById(R.id.linearLayout);
+            linearLayout.setBackgroundColor(rowView.getResources().getColor(android.R.color.holo_red_light));
+        }
+        int minQuantity = parseInt(sharedPreferences.getString("prefDangerQuantity", "0"));
+        if(qty <= minQuantity) {
+            LinearLayout linearLayout = (LinearLayout)rowView.findViewById(R.id.linearLayout);
+            linearLayout.setBackgroundColor(rowView.getResources().getColor(android.R.color.holo_red_light));
+        }
+    }
+
+    private int parseInt(String value) {
+        int result = 0;
+        if(!value.isEmpty()) {
+            result = Integer.parseInt(value);
+        }
+
+        return result;
+    }
+    private Long parseLong(String value) {
+        Long result = 0L;
+        if(!value.isEmpty()) {
+            result = Long.parseLong(value);
+        }
+
+        return result;
     }
 
 }
