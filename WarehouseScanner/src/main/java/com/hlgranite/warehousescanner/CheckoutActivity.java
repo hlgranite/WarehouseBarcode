@@ -37,6 +37,9 @@ public class CheckoutActivity extends Activity {
         public void onClick(View v) {
             // TODO: Launch camera for scan barcode
             Log.i("INFO", "Launch camera for scan barcode ");
+            Intent i = new Intent(CheckoutActivity.this, ManualActivity.class);
+            i.putExtra("barcode", "BLUE06003000A13P");
+            startActivityForResult(i, MANUAL_ACTIVITY);
         }
     };
 

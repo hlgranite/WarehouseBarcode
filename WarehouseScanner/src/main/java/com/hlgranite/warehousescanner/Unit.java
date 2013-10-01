@@ -9,4 +9,7 @@ public class Unit {
     public static final String Meter = "m";
     public static final String Feet = "ft";
 
+    public static final String Mm = "mm";
+    public static final String Inch = "\"";
+    public static final String Piece = "pcs";
 }

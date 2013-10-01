@@ -2,6 +2,7 @@ package com.hlgranite.warehousescanner;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,13 +14,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Random;
 
 public class ManualActivity extends Activity {
@@ -29,11 +33,17 @@ public class ManualActivity extends Activity {
     private EditText editText;
     private Spinner spinner;
     private String customer;
+    private Barcode barcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manual);
+        String barcodeString = getIntent().getStringExtra("barcode");
+        Log.i("INFO", "Barcode: " + barcodeString);
+        if(barcodeString != null && !barcodeString.isEmpty()) {
+            barcode = new Barcode(barcodeString);
+        }
 
         Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(checkoutClick);
@@ -58,7 +68,13 @@ public class ManualActivity extends Activity {
 
         // set focus on barcode entry when popup
         EditText editText2 = (EditText)findViewById(R.id.editText2);
-        editText2.requestFocus();
+        if(barcode != null) {
+            editText2.setText(barcode.getNumber());
+            editText2.setEnabled(false);
+            loadBarcodeInfo();
+        } else {
+            editText2.requestFocus();
+        }
 
         // bind customer into dropdownlist
         spinner = (Spinner)findViewById(R.id.spinner);
@@ -75,6 +91,35 @@ public class ManualActivity extends Activity {
             }
         });
         new RetrieveCustomer(this).execute();
+    }
+
+    /**
+     * Preload barcode data
+     * TODO: Retrieve from Http GET prior to RetrieveCustomer
+     */
+    private void loadBarcodeInfo() {
+        if(FusionManager.getInstance().getStockImage().size() > 0) {
+            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+            Bitmap image = FusionManager.getInstance().getStockImage().get(barcode.getStockCode());
+            imageView.setImageBitmap(image);
+        }
+
+        if(FusionManager.getInstance().getStocks().size() > 0) {
+            for(Stock stock: FusionManager.getInstance().getStocks()) {
+                if(barcode.getStockCode().equals(stock.getCode())) {
+                    TextView textView6 = (TextView)findViewById(R.id.textView6);
+                    String info = stock.getName();
+                    info += "\nmin size ";
+                    info += barcode.getWidth()+"x"+barcode.getLength()+"mm";
+                    info += " = ";
+                    info += Area.round(barcode.getWidth()/25.4,2) + Unit.Inch;
+                    info += "x" + Area.round(barcode.getLength()/25.4,2) + Unit.Inch;
+                    //TODO: info += "\nShipped in " + barcode.getDate();
+                    info += "\nBalance " + stock.getBalance() + Unit.Piece;
+                    textView6.setText(info);
+                }
+            }
+        }
     }
 
     protected DatePickerDialog.OnDateSetListener dateDialog = new DatePickerDialog.OnDateSetListener() {

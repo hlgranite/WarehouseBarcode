@@ -10,7 +10,7 @@ public class Area {
     /**
      * Square character.
      */
-    private final char SQUARE = '\u00B2';
+    public static final char SQUARE = '\u00B2';
 
     private long value;
     public long getValue() {
@@ -67,11 +67,20 @@ public class Area {
      * @param places
      * @return
      */
-    private double round(double value, int places) {
+    public static double round(double value, int places) {
         if(places < 0) throw new IllegalArgumentException();
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, BigDecimal.ROUND_HALF_UP);
         return bd.doubleValue();
+    }
+
+    /**
+     * TODO: Return nearer fraction value.
+     * @param value
+     * @return
+     */
+    public static String fraction(double value) {
+        return "";
     }
 
 }
