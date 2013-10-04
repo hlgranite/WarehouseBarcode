@@ -1,5 +1,7 @@
 package com.hlgranite.warehousescanner;
 
+import android.util.Log;
+
 import java.util.Date;
 
 /**
@@ -77,6 +79,7 @@ public class Barcode {
      * @param date
      */
     public void setLastUpdated(Date date) {
+        if(date == null) return;
         if(this.lastUpdated == null) {
             this.lastUpdated = date;
         } else {

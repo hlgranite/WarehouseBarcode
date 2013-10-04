@@ -52,13 +52,15 @@ public class Stock {
             if(barcode.getStockCode().equals(this.code)) {
                 int qty = shipment.getQuantity();
                 if(this.items.containsKey(barcode)) {
+                    Barcode old = getBarcodeItem(barcode);
+                    old.setLastUpdated(shipment.getDate());
+
                     int oldQty = items.get(barcode);
                     this.items.remove(barcode);
-                    this.items.put(barcode,qty+oldQty);
-                    barcode.setLastUpdated(shipment.getDate());
+                    this.items.put(old,qty+oldQty);
                 } else {
-                    this.items.put(barcode, qty);
                     barcode.setLastUpdated(shipment.getDate());
+                    this.items.put(barcode, qty);
                 }
 
                 this.balance += qty;
@@ -72,9 +74,11 @@ public class Stock {
                 if(this.items.containsKey(barcode)) {
                     int oldQty = items.get(barcode);
                     oldQty--;
+
+                    Barcode old = getBarcodeItem(barcode);
+                    old.setLastUpdated(workOrder.getDate());
                     this.items.remove(barcode);
-                    this.items.put(barcode,oldQty);
-                    barcode.setLastUpdated(workOrder.getDate());
+                    this.items.put(old,oldQty);
 
                     this.balance --;
                     long totalArea = barcode.getWidth() * barcode.getLength();
@@ -88,6 +92,16 @@ public class Stock {
 
         return this.balance;
     }
+
+    private Barcode getBarcodeItem(Barcode barcode) {
+        for(Barcode item: this.items.keySet()) {
+            if(item.equals(barcode)) return item;
+        }
+
+        return null;
+    }
+
+
     private Area area;
 
     /**
