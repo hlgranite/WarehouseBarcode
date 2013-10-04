@@ -28,9 +28,9 @@
     <string name="pref_unit_summary">Choose Unit</string>
     <string name="pref_notification">Notification</string>
     <string name="pref_danger_area">Danger Level Area</string>
-    <string name="pref_danger_area_summary">Set danger level(m²)</string>
+    <string name="pref_danger_area_summary">Set danger level (m²)</string>
     <string name="pref_danger_quantity">Danger Level Quantity</string>
-    <string name="pref_danger_quantity_summary">Set danger level(pcs)</string>
+    <string name="pref_danger_quantity_summary">Set danger level (pcs)</string>
     <string name="help">Help</string>
     <string name="title_activity_manual">Manual Checkout</string>
     <string name="barcode">Barcode</string>
@@ -39,4 +39,6 @@
     <string name="reference">Reference</string>
     <string name="qty">Qty</string>
     <string name="version">Version</string>
+    <string name="contact">Contact</string>
+    <string name="contact_email">yancyn@gmail.com</string>
 </resources>
