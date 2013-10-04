@@ -12,4 +12,15 @@ public class Unit {
     public static final String Mm = "mm";
     public static final String Inch = "\"";
     public static final String Piece = "pcs";
+
+    public static final double InchRatio = 25.4;
+
+    /**
+     * TODO: Return nearer fraction value.
+     * @param value
+     * @return
+     */
+    public static String fraction(double value) {
+        return "";
+    }
 }

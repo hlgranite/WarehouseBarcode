@@ -74,13 +74,4 @@ public class Area {
         return bd.doubleValue();
     }
 
-    /**
-     * TODO: Return nearer fraction value.
-     * @param value
-     * @return
-     */
-    public static String fraction(double value) {
-        return "";
-    }
-
 }

@@ -107,15 +107,17 @@ public class ManualActivity extends Activity {
         if(FusionManager.getInstance().getStocks().size() > 0) {
             for(Stock stock: FusionManager.getInstance().getStocks()) {
                 if(barcode.getStockCode().equals(stock.getCode())) {
+                    TextView textView7 = (TextView)findViewById(R.id.textView7);
+                    textView7.setText(stock.getName());
+
                     TextView textView6 = (TextView)findViewById(R.id.textView6);
-                    String info = stock.getName();
-                    info += "\nmin size ";
-                    info += barcode.getWidth()+"x"+barcode.getLength()+"mm";
-                    info += " = ";
-                    info += Area.round(barcode.getWidth()/25.4,2) + Unit.Inch;
-                    info += "x" + Area.round(barcode.getLength()/25.4,2) + Unit.Inch;
+                    String info = "min size ";
+                    info += "\n" + barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
+                    info += "\n" + Area.round(barcode.getWidth()/Unit.InchRatio, 2) + Unit.Inch;
+                    info += "x" + Area.round(barcode.getLength()/Unit.InchRatio, 2) + Unit.Inch;
                     //TODO: info += "\nShipped in " + barcode.getDate();
                     info += "\nBalance " + stock.getBalance() + Unit.Piece;
+                    info += "\nAt "; // TODO: Warehouse
                     textView6.setText(info);
                 }
             }
@@ -187,6 +189,7 @@ public class ManualActivity extends Activity {
         @Override
         protected void onPostExecute(ArrayList<String> customers) {
             super.onPostExecute(customers);
+
             // Bind into customer spinner
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManualActivity.this, android.R.layout.simple_spinner_dropdown_item, customers);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
