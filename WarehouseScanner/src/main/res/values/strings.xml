@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Warehouse Scanner</string>
     <string name="action_settings">Settings</string>
+    <string name="action_sync">Sync</string>
     <string name="action_refresh_history">Refresh</string>
     <string name="action_refresh_balance">Refresh</string>
     <string name="action_sort_area">Sort by Area</string>
