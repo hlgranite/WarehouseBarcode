@@ -404,6 +404,59 @@ public class FusionManager {
 
         return this.stocks;
     }
+    public Stock getStock(String code) {
+        Stock stock = null;
+        if(this.stocks == null) {
+            String url = urlPrefix + "?sql=SELECT * FROM " + stockTableId + " WHERE code='" + code + "'" + "&key=" + apiKey;
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(validateUrl(url));
+            HttpResponse response = null;
+            StringBuilder builder = new StringBuilder();
+            JSONObject object = null;
+
+            try {
+                response = httpClient.execute(httpPost);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+                String line = "";
+                while(null != (line = reader.readLine())) {
+                    builder.append(line);
+                }
+
+                JSONParser parser = new JSONParser();
+                object = (JSONObject)parser.parse(builder.toString());
+                reader.close();
+            } catch(ClientProtocolException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch(IOException e) {
+                Log.e("ERROR", e.getMessage());
+            } catch (ParseException e) {
+                Log.e("ERROR", e.getMessage());
+                Log.e("ERROR", "Position: "+e.getPosition());
+            }
+
+            Object o = object.get("rows");
+            if(o != null) {
+                JSONArray rows = (JSONArray)o;
+                for(int i=0;i<rows.size();i++) {
+                    o = rows.get(i);
+                    JSONArray obj = (JSONArray)o;
+                    //String code = obj.get(0).toString().trim();
+                    String name = obj.get(1).toString().trim();
+                    String description = obj.get(2).toString().trim();
+                    String imageUrl = obj.get(3).toString().trim();
+                    stock = new Stock(code,name,description,imageUrl);
+                }
+            }
+        } else {
+            for(Stock s: this.stocks) {
+                if(s.getCode().equals(code)) {
+                    return s;
+                }
+            }
+        }
+
+        return stock;
+    }
 
     public void addStockImage(String stockCode, Bitmap bitmap) {
         if(!this.stockImages.containsKey(stockCode)) {

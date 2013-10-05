@@ -71,9 +71,10 @@ public class ManualActivity extends Activity {
         if(barcode != null) {
             editText2.setText(barcode.getNumber());
             editText2.setEnabled(false);
-            loadBarcodeInfo();
+            new RetrieveStock(this).execute(barcode.getStockCode());
         } else {
             editText2.requestFocus();
+            new RetrieveCustomer(this).execute();
         }
 
         // bind customer into dropdownlist
@@ -90,41 +91,6 @@ public class ManualActivity extends Activity {
                 // do nothing
             }
         });
-        new RetrieveCustomer(this).execute();
-    }
-
-    /**
-     * Preload barcode data
-     * TODO: Retrieve from Http GET prior to RetrieveCustomer
-     */
-    private void loadBarcodeInfo() {
-        if(FusionManager.getInstance().getStockImage().size() > 0) {
-            ImageView imageView = (ImageView)findViewById(R.id.imageView);
-            Bitmap image = FusionManager.getInstance().getStockImage().get(barcode.getStockCode());
-            imageView.setImageBitmap(image);
-        }
-
-        if(FusionManager.getInstance().getStocks().size() > 0) {
-            for(Stock stock: FusionManager.getInstance().getStocks()) {
-                if(barcode.getStockCode().equals(stock.getCode())) {
-                    TextView textView7 = (TextView)findViewById(R.id.textView7);
-                    textView7.setText(stock.getName());
-
-                    TextView textView6 = (TextView)findViewById(R.id.textView6);
-                    String info = "min size ";
-                    info += "\n" + barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
-                    info += "\n" + Area.round(barcode.getWidth() / Unit.InchRatio, 2) + Unit.Inch;
-                    info += "x" + Area.round(barcode.getLength()/Unit.InchRatio, 2) + Unit.Inch;
-
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    info += "\nShipped in " + dateFormat.format(barcode.getLastUpdated());
-
-                    info += "\nBalance " + stock.getBalance() + Unit.Piece;
-                    info += " at " + FusionManager.getInstance().getWarehouse(barcode.getWarehouse());
-                    textView6.setText(info);
-                }
-            }
-        }
     }
 
     protected DatePickerDialog.OnDateSetListener dateDialog = new DatePickerDialog.OnDateSetListener() {
@@ -177,6 +143,62 @@ public class ManualActivity extends Activity {
 //        return true;
 //    }
 
+    private class RetrieveStock extends AsyncTask<String, Void, Stock> {
+        private Context context;
+        public RetrieveStock(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Stock doInBackground(String... params) {
+            return FusionManager.getInstance().getStock(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Stock stock) {
+            super.onPostExecute(stock);
+            loadBarcodeInfo(stock);
+            new RetrieveCustomer(context).execute();
+        }
+    }
+
+    /**
+     * Preload barcode data
+     * TODO: Retrieve from Http GET prior to RetrieveCustomer
+     */
+    private void loadBarcodeInfo(Stock stock) {
+
+        TextView textView7 = (TextView)findViewById(R.id.textView7);
+        textView7.setText(stock.getName());
+
+        TextView textView6 = (TextView)findViewById(R.id.textView6);
+        String info = "min size ";
+        info += "\n" + barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
+        info += "\n" + Area.round(barcode.getWidth() / Unit.InchRatio, 3) + Unit.Inch;
+        info += "x" + Area.round(barcode.getLength()/Unit.InchRatio, 3) + Unit.Inch;
+
+        if(barcode.getLastUpdated() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            info += "\nShipped in " + dateFormat.format(barcode.getLastUpdated());
+        }
+
+        if(FusionManager.getInstance().getStockImage().size() > 0) {
+            info += "\nBalance " + stock.getItems().get(barcode) + Unit.Piece;
+            info += " at " + FusionManager.getInstance().getWarehouse(barcode.getWarehouse());
+        }
+
+        Log.i("INFO", info);
+        textView6.setText(info);
+        // force redraw interface
+        //this.findViewById(R.id.linearLayout).invalidate();
+
+        if(FusionManager.getInstance().getStockImage().size() > 0) {
+            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+            Bitmap image = FusionManager.getInstance().getStockImage().get(barcode.getStockCode());
+            imageView.setImageBitmap(image);
+        }
+    }
+
     private class RetrieveCustomer extends AsyncTask<String, Void, ArrayList<String>> {
         private Context context;
 
@@ -199,5 +221,4 @@ public class ManualActivity extends Activity {
             spinner.setAdapter(adapter);
         }
     }
-    
 }
