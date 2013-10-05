@@ -43,8 +43,10 @@ public class Barcode {
             this.width = Integer.parseInt(number.substring(4,8));
         if(number.length() >= 12)
             this.length = Integer.parseInt(number.substring(8,12));
-        if(number.length() >= 15)
+        if(number.length() >= 15) {
             this.shipment = number.substring(12,15);
+            this.lastUpdated = FusionManager.getInstance().getShipDate(this.shipment);
+        }
         if(number.length() >= 16)
             this.warehouseCode = number.substring(15,16);
 //        Log.i("INFO", "Stock: " + stockCode);
@@ -70,6 +72,7 @@ public class Barcode {
         this.width = width;
         this.length = length;
         this.shipment = shipment;
+        this.lastUpdated = FusionManager.getInstance().getShipDate(this.shipment);
         this.warehouseCode = warehouse;
         this.number = toString();
     }

@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  * Created by yeang-shing.then on 9/18/13.
  * source: http://code.google.com/p/google-api-java-client/source/browse/fusiontables-cmdline-sample/src/main/java/com/google/api/services/samples/fusiontables/cmdline/FusionTablesSample.java?repo=samples
@@ -47,12 +49,19 @@ public class FusionManager {
      */
     private String auth = "";
     private final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
+
     private final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
+    private final String shipTableId = "1ScgXEsfcwRdiTgqO65_rWm6kiXkKwlfQtsFCiIM";
+    private final String warehouseTableId = "1K0EohmDFo5H5O9WQRuL8oQFgAM2bUWzgboCYDRM";
     private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";
-    private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
+
     private final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
+    private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
 
     private ArrayList<Customer> customers;
+    private ArrayList<Warehouse> warehouses;
+    private ArrayList<ShipCode> shipCodes;
+
     private ArrayList<Shipment> shipments;
     private ArrayList<WorkOrder> workOrders;
     private ArrayList<Stock> stocks;
@@ -205,6 +214,140 @@ public class FusionManager {
         }
 
         return output;
+    }
+
+    public ArrayList<Warehouse> getWarehouses() {
+        if(this.warehouses == null) {
+            this.warehouses = new ArrayList<Warehouse>();
+        } else {
+            return this.warehouses;
+        }
+
+        String url = urlPrefix + "?sql=SELECT * FROM " + warehouseTableId + "&key=" + apiKey;
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
+        StringBuilder builder = new StringBuilder();
+        JSONObject object = null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+            reader.close();
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
+        }
+
+        Object o = object.get("rows");
+        if(o != null) {
+            JSONArray rows = (JSONArray)o;
+            for(int i=0;i<rows.size();i++) {
+                o = rows.get(i);
+                JSONArray obj = (JSONArray)o;
+
+                String code = obj.get(0).toString().trim();// code
+                String name = obj.get(1).toString().trim();// name
+
+                Warehouse warehouse = new Warehouse(code, name);
+                this.warehouses.add(warehouse);
+            }
+        }
+
+        return this.warehouses;
+    }
+    public String getWarehouse(String code) {
+        if(this.warehouses == null) return "";
+        if(this.warehouses.size() == 0) return "";
+
+        for(Warehouse warehouse: this.warehouses) {
+            if(warehouse.getCode().equals(code)) {
+                return warehouse.getName();
+            }
+        }
+
+        return "";
+    }
+
+    public ArrayList<ShipCode> getShipCodes() {
+        if(this.shipCodes == null) {
+            this.shipCodes = new ArrayList<ShipCode>();
+        } else {
+            return this.shipCodes;
+        }
+
+        String url = urlPrefix + "?sql=SELECT * FROM " + shipTableId + "&key=" + apiKey;
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(validateUrl(url));
+        HttpResponse response = null;
+        StringBuilder builder = new StringBuilder();
+        JSONObject object = null;
+
+        try {
+            response = httpClient.execute(httpPost);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+            String line = "";
+            while(null != (line = reader.readLine())) {
+                builder.append(line);
+            }
+
+            JSONParser parser = new JSONParser();
+            object = (JSONObject)parser.parse(builder.toString());
+            reader.close();
+        } catch(ClientProtocolException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch(IOException e) {
+            Log.e("ERROR", e.getMessage());
+        } catch (ParseException e) {
+            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", "Position: "+e.getPosition());
+        }
+
+        Object o = object.get("rows");
+        if(o != null) {
+            JSONArray rows = (JSONArray)o;
+            for(int i=0;i<rows.size();i++) {
+                o = rows.get(i);
+                JSONArray obj = (JSONArray)o;
+
+                String code = obj.get(0).toString().trim();// code
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = null;
+                try {
+                    date = dateFormat.parse(obj.get(1).toString().trim());
+                } catch (java.text.ParseException e) {
+                    Log.e("ERROR", e.getMessage());
+                }
+
+                ShipCode shipCode = new ShipCode(code, date);
+                this.shipCodes.add(shipCode);
+            }
+        }
+
+        return this.shipCodes;
+    }
+    public Date getShipDate(String code) {
+        if(this.shipCodes == null) return null;
+        if(this.shipCodes.size() == 0) return null;
+
+        for(ShipCode shipCode: this.shipCodes) {
+            if(shipCode.getCode().equals(code)) {
+                return shipCode.getDate();
+            }
+        }
+
+        return null;
     }
 
     /**

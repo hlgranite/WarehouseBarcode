@@ -113,11 +113,14 @@ public class ManualActivity extends Activity {
                     TextView textView6 = (TextView)findViewById(R.id.textView6);
                     String info = "min size ";
                     info += "\n" + barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
-                    info += "\n" + Area.round(barcode.getWidth()/Unit.InchRatio, 2) + Unit.Inch;
+                    info += "\n" + Area.round(barcode.getWidth() / Unit.InchRatio, 2) + Unit.Inch;
                     info += "x" + Area.round(barcode.getLength()/Unit.InchRatio, 2) + Unit.Inch;
-                    //TODO: info += "\nShipped in " + barcode.getDate();
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    info += "\nShipped in " + dateFormat.format(barcode.getLastUpdated());
+
                     info += "\nBalance " + stock.getBalance() + Unit.Piece;
-                    info += "\nAt "; // TODO: Warehouse
+                    info += " at " + FusionManager.getInstance().getWarehouse(barcode.getWarehouse());
                     textView6.setText(info);
                 }
             }

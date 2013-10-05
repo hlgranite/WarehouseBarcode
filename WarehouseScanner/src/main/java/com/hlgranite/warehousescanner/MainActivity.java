@@ -208,5 +208,35 @@ public class MainActivity extends TabActivity {
             FusionManager.getInstance().authenticate(params[0], params[1]);
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            new RetrieveWarehouse().execute();
+        }
+    }
+
+    private class RetrieveWarehouse extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.i("INFO", "Getting warehouse code");
+            FusionManager.getInstance().getWarehouses();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            new RetrieveShipCode().execute();
+        }
+    }
+    private class RetrieveShipCode extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            Log.i("INFO", "Getting ship code");
+            FusionManager.getInstance().getShipCodes();
+            return null;
+        }
     }
 }
