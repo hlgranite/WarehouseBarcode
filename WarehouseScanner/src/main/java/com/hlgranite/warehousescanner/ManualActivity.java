@@ -3,6 +3,7 @@ package com.hlgranite.warehousescanner;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -158,7 +161,6 @@ public class ManualActivity extends Activity {
         protected void onPostExecute(Stock stock) {
             super.onPostExecute(stock);
             loadBarcodeInfo(stock);
-            new RetrieveCustomer(context).execute();
         }
     }
 
@@ -196,6 +198,9 @@ public class ManualActivity extends Activity {
             ImageView imageView = (ImageView)findViewById(R.id.imageView);
             Bitmap image = FusionManager.getInstance().getStockImage().get(barcode.getStockCode());
             imageView.setImageBitmap(image);
+            new RetrieveCustomer(this).execute();
+        } else {
+            new DownloadImageTask(this).execute(stock.getImageUrl());
         }
     }
 
@@ -219,6 +224,39 @@ public class ManualActivity extends Activity {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManualActivity.this, android.R.layout.simple_spinner_dropdown_item, customers);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
+        }
+    }
+
+    /**
+     * Download image from internet asynchronously.
+     */
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        private Context context;
+
+        public DownloadImageTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+
+            Bitmap bitmap = null;
+            try{
+                URL request = new URL(params[0]);
+                bitmap = BitmapFactory.decodeStream(request.openConnection().getInputStream());
+                return bitmap;
+            } catch(IOException ex) {
+                Log.e("ERROR", "Could not load bitmap from: " + params[1]);
+                return bitmap;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            ImageView imageView = (ImageView)findViewById(R.id.imageView);
+            imageView.setImageBitmap(bitmap);
+            new RetrieveCustomer(context).execute();
         }
     }
 }
