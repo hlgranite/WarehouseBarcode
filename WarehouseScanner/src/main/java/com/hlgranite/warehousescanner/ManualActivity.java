@@ -174,14 +174,16 @@ public class ManualActivity extends Activity {
         textView7.setText(stock.getName());
 
         TextView textView6 = (TextView)findViewById(R.id.textView6);
-        String info = "min size ";
-        info += "\n" + barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
-        info += "\n" + Area.round(barcode.getWidth() / Unit.InchRatio, 3) + Unit.Inch;
-        info += "x" + Area.round(barcode.getLength()/Unit.InchRatio, 3) + Unit.Inch;
+        String info = barcode.getWidth()+"x"+barcode.getLength()+Unit.Mm;
+
+        double width =  Area.round(barcode.getWidth()/Unit.InchRatio, 3);
+        double length = Area.round(barcode.getLength()/Unit.InchRatio, 3);
+        info += "\n" + width + Unit.Inch + "x" + length + Unit.Inch;
+        info += "\n(" + Unit.toFeetLabel(width) + "x" +Unit.toFeetLabel(length) + ")";
 
         if(barcode.getLastUpdated() != null) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            info += "\nShipped in " + dateFormat.format(barcode.getLastUpdated());
+            info += "\nShipped at " + dateFormat.format(barcode.getLastUpdated());
         }
 
         if(FusionManager.getInstance().getStockImage().size() > 0) {

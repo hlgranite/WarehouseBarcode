@@ -156,7 +156,14 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
                 // show last updated date either shipment or checkout date
                 if(barcode.getLastUpdated() != null) {
                     TextView textView5 = (TextView)rowView.findViewById(R.id.textView5);
-                    textView5.setText(DateFormat.getDateTimeInstance().format(barcode.getLastUpdated()));
+                    if(barcode.getLastUpdated().getHours() == 0
+                            && barcode.getLastUpdated().getMinutes() == 0
+                            && barcode.getLastUpdated().getSeconds() == 0) {
+                        //Log.i("INFO", "DateOnly format: "+ DateFormat.getDateInstance().toString());
+                        textView5.setText(DateFormat.getDateInstance().format(barcode.getLastUpdated()));
+                    } else {
+                        textView5.setText(DateFormat.getDateTimeInstance().format(barcode.getLastUpdated()));
+                    }
                 }
 
                 TextView textView6 = (TextView)rowView.findViewById(R.id.textView6);
