@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="android-integration-2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WarehouseScanner/libs/android-integration-2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
