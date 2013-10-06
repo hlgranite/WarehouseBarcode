@@ -193,8 +193,6 @@ public class ManualActivity extends Activity {
 
         Log.i("INFO", info);
         textView6.setText(info);
-        // force redraw interface
-        //this.findViewById(R.id.linearLayout).invalidate();
 
         if(FusionManager.getInstance().getStockImage().size() > 0) {
             ImageView imageView = (ImageView)findViewById(R.id.imageView);

@@ -14,3 +14,4 @@ Reference
 4. [Fusion Table Sample Code](https://developers.google.com/fusiontables/docs/sample_code)
 5. http://articlesforprogramming.blogspot.in/2013/06/how-to-do-add-external-library-file-in.html
 7. [Json Simple](http://code.google.com/p/json-simple/)
+8. [Integrate ZXing](http://code.google.com/p/zxing/wiki/ScanningViaIntent)

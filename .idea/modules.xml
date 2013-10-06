@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WarehouseBarcode.iml" filepath="$PROJECT_DIR$/WarehouseBarcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/WarehouseScanner/WarehouseScanner.iml" filepath="$PROJECT_DIR$/WarehouseScanner/WarehouseScanner.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WarehouseScannerProject.iml" filepath="$PROJECT_DIR$/WarehouseScannerProject.iml" />
     </modules>
   </component>
 </project>
