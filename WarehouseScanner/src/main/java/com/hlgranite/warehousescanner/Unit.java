@@ -1,5 +1,7 @@
 package com.hlgranite.warehousescanner;
 
+import android.util.Log;
+
 /**
  * Unit class act like enum.
  * Created by yeang-shing.then on 9/30/13.
@@ -15,29 +17,56 @@ public class Unit {
 
     public static final double InchRatio = 25.4;
 
+    private static final double EIGHTH = 0.125;
+    private static final char EIGHTH_CHAR = '\u215B';
+    private static final char EIGHTH2_CHAR = '\u00BC';
+    private static final char EIGHTH3_CHAR = '\u215C';
+    private static final char EIGHTH4_CHAR = '\u00BD';
+    private static final char EIGHTH5_CHAR = '\u215D';
+    private static final char EIGHTH6_CHAR = '\u00BE';
+    private static final char EIGHTH7_CHAR = '\u215E';
+
     public static String toFeetLabel(double value) {
         //Log.i("INFO", "Convert "+value);
         String result = Double.toString(value) + Unit.Inch;
         int floor = (int)Math.floor(value/12d);
-        //Log.i("INFO", "Ceiling: " + floor);
-        double remainder = value - floor*12d;
+        double remainder = Area.round(value - floor*12d, 3);
 
-        // TODO: Convert remainder to fraction number
+        // Convert remainder to fraction number
         if(floor > 0) {
-            result = floor + "' " + remainder + Unit.Inch;
+            int inches = (int)remainder;
+            double digits = remainder - inches;
+            result = floor + "' " + inches + fraction(digits) + Unit.Inch;
         } else {
-            result = value + Unit.Inch;
+            int inches = (int)value;
+            double digits = value - inches;
+            result = inches + fraction(digits) + Unit.Inch;
         }
 
         return result;
     }
 
     /**
-     * TODO: Return nearer fraction value.
-     * @param value
+     * Return nearer fraction value.
+     * @param value Double value must less than 1.
      * @return
      */
-    public static String fraction(double value) {
-        return "";
+    public static char fraction(double value) {
+        char result = '\0';
+        char[] eights = new char[]{EIGHTH_CHAR, EIGHTH2_CHAR, EIGHTH3_CHAR, EIGHTH4_CHAR, EIGHTH5_CHAR, EIGHTH6_CHAR, EIGHTH7_CHAR, '\0'};
+
+        for(int i=eights.length;i>=0;i--) {
+            if(value > i*EIGHTH) {
+                if(value - i*EIGHTH > (i+1)*EIGHTH - value) {
+                    //Log.i("INFO", "Round " + value + " to " + eights[i + 1]);
+                    return eights[i];
+                } else {
+                    //Log.i("INFO", "Round " + value + " to " + eights[i]);
+                    return eights[i+1];
+                }
+            }
+        }
+
+        return result;
     }
 }
