@@ -1,7 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.util.Log;
-
 import java.util.Date;
 
 /**

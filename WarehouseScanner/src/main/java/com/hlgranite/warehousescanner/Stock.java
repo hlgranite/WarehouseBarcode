@@ -32,10 +32,6 @@ public class Stock {
         return items;
     }
 
-    /**
-     * TODO: Get smaller bitmap for this field in fusion table record to reduce loading time.
-     * @return
-     */
     public String getImageUrl() {
         return this.imageUrl;
     }

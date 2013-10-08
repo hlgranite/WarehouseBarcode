@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,18 +20,15 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Random;
 
 public class ManualActivity extends Activity {
 
     private Calendar calendar = Calendar.getInstance();
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // TODO: Make dateFormat as global variable
     private EditText editText;
     private Spinner spinner;
     private String customer;
@@ -53,7 +49,7 @@ public class ManualActivity extends Activity {
 
         // set today date as default
         editText = (EditText)findViewById(R.id.editText);
-        editText.setText(dateFormat.format(calendar.getTime()));
+        editText.setText(Unit.DateFormatter.format(calendar.getTime()));
 
         // show datepicker when click on date editText
         editText.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +98,7 @@ public class ManualActivity extends Activity {
             calendar.set(Calendar.YEAR, year);
             calendar.set(Calendar.MONTH, monthOfYear);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            editText.setText(dateFormat.format(calendar.getTime()));
+            editText.setText(Unit.DateFormatter.format(calendar.getTime()));
         }
     };
 
@@ -117,9 +113,9 @@ public class ManualActivity extends Activity {
                 EditText editText3 = (EditText)findViewById(R.id.editText3);
                 EditText editText4 = (EditText)findViewById(R.id.editText4);
 
-                // get date value and tight to time as well.
+                // get date value and tight to current time.
                 Date now = new Date();
-                Date date = dateFormat.parse(editText.getText().toString());
+                Date date = Unit.DateFormatter.parse(editText.getText().toString());
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
                 cal.add(Calendar.HOUR_OF_DAY, now.getHours());
@@ -165,8 +161,7 @@ public class ManualActivity extends Activity {
     }
 
     /**
-     * Preload barcode data
-     * TODO: Retrieve from Http GET prior to RetrieveCustomer
+     * Preload barcode data.
      */
     private void loadBarcodeInfo(Stock stock) {
 
@@ -182,8 +177,7 @@ public class ManualActivity extends Activity {
         info += "\n(" + Unit.toFeetLabel(width) + "x" +Unit.toFeetLabel(length) + ")";
 
         if(barcode.getLastUpdated() != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            info += "\nShipped at " + dateFormat.format(barcode.getLastUpdated());
+            info += "\nShipped in " + DateFormat.getDateInstance().format(barcode.getShipDate());
         }
 
         if(FusionManager.getInstance().getStockImage().size() > 0) {

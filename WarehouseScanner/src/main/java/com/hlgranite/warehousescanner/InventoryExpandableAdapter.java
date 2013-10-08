@@ -182,8 +182,6 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
             i++;
         }
 
-        // TODO: Show last checkout date
-
         return rowView;
     }
 

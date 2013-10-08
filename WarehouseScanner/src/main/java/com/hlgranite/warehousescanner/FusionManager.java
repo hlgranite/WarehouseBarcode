@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 /**
  * Created by yeang-shing.then on 9/18/13.
  * source: http://code.google.com/p/google-api-java-client/source/browse/fusiontables-cmdline-sample/src/main/java/com/google/api/services/samples/fusiontables/cmdline/FusionTablesSample.java?repo=samples
@@ -94,15 +92,13 @@ public class FusionManager {
     }
 
     /**
-     * Always return a same datastore object.
+     * Always return a same datastore object with multithreaded safety.
      * @return
      */
-    public static FusionManager getInstance() {
+    public static synchronized FusionManager getInstance() {
         if(instance == null) {
-            // TODO: Handle multithreaded
             instance = new FusionManager();
         }
-
         return instance;
     }
 
@@ -688,6 +684,7 @@ public class FusionManager {
             if(httpEntity != null) {
                 try {
                     Log.i("INFO", EntityUtils.toString(httpEntity));
+                    //Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
                     Log.e("ERROR", e.getMessage());
                 }

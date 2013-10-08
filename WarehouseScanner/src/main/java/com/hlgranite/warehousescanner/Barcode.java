@@ -1,7 +1,5 @@
 package com.hlgranite.warehousescanner;
 
-import android.util.Log;
-
 import java.util.Date;
 
 /**
@@ -45,6 +43,7 @@ public class Barcode {
             this.length = Integer.parseInt(number.substring(8,12));
         if(number.length() >= 15) {
             this.shipment = number.substring(12,15);
+            this.shipDate = FusionManager.getInstance().getShipDate(this.shipment);
             this.lastUpdated = FusionManager.getInstance().getShipDate(this.shipment);
         }
         if(number.length() >= 16)
@@ -59,7 +58,20 @@ public class Barcode {
         return this.number;
     }
 
+    private Date shipDate;
+    /**
+     * Return ship date for this barcode.
+     * @return
+     */
+    public Date getShipDate() {
+        return this.shipDate;
+    }
+
     private Date lastUpdated;
+    /**
+     * Return last updated date. This will be recent checkout date if not return shipment date.
+     * @return
+     */
     public Date getLastUpdated() {
         return this.lastUpdated;
     }
@@ -72,6 +84,7 @@ public class Barcode {
         this.width = width;
         this.length = length;
         this.shipment = shipment;
+        this.shipDate = FusionManager.getInstance().getShipDate(this.shipment);
         this.lastUpdated = FusionManager.getInstance().getShipDate(this.shipment);
         this.warehouseCode = warehouse;
         this.number = toString();
@@ -83,6 +96,8 @@ public class Barcode {
      */
     public void setLastUpdated(Date date) {
         if(date == null) return;
+
+        if(this.shipDate == null) this.shipDate = date;
         if(this.lastUpdated == null) {
             this.lastUpdated = date;
         } else {

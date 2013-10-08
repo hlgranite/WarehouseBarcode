@@ -66,6 +66,7 @@ public class CheckoutActivity extends Activity {
             case MANUAL_ACTIVITY:
                 Log.i("INFO", "Result code: "+resultCode);
                 if(resultCode == Activity.RESULT_OK) {
+                    // TODO: Not true, this must really return from FusionManager.checkout result
                     Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
                 }
                 break;

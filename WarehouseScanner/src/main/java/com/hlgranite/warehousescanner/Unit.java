@@ -1,6 +1,6 @@
 package com.hlgranite.warehousescanner;
 
-import android.util.Log;
+import java.text.SimpleDateFormat;
 
 /**
  * Unit class act like enum.
@@ -16,7 +16,6 @@ public class Unit {
     public static final String Piece = "pcs";
 
     public static final double InchRatio = 25.4;
-
     private static final double EIGHTH = 0.125;
     private static final char EIGHTH_CHAR = '\u215B';
     private static final char EIGHTH2_CHAR = '\u00BC';
@@ -26,8 +25,14 @@ public class Unit {
     private static final char EIGHTH6_CHAR = '\u00BE';
     private static final char EIGHTH7_CHAR = '\u215E';
 
+    public static SimpleDateFormat DateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
+    /**
+     * Convert mm to feet conversion.
+     * @param value
+     * @return
+     */
     public static String toFeetLabel(double value) {
-        //Log.i("INFO", "Convert "+value);
         String result = Double.toString(value) + Unit.Inch;
         int floor = (int)Math.floor(value/12d);
         double remainder = Area.round(value - floor*12d, 3);
@@ -48,7 +53,7 @@ public class Unit {
 
     /**
      * Return nearer fraction value.
-     * @param value Double value must less than 1.
+     * @param value Double value less than 1.
      * @return
      */
     public static char fraction(double value) {
