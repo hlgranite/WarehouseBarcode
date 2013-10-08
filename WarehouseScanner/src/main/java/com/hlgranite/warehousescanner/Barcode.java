@@ -109,7 +109,8 @@ public class Barcode {
 
     @Override
     public String toString() {
-        return this.stockCode+String.format("%04d", this.width)+String.format("%04d", this.length)+this.shipment+this.warehouseCode;
+        return this.stockCode+String.format(Unit.LENGTH_FORMAT, this.width)
+                + String.format(Unit.LENGTH_FORMAT, this.length)+this.shipment+this.warehouseCode;
     }
 
     //<editor-fold desc="Determine uniqueness when calling Collections.contains">

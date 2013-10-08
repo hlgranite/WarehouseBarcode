@@ -1,6 +1,8 @@
 package com.hlgranite.warehousescanner;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Unit class act like enum.
@@ -25,6 +27,7 @@ public class Unit {
     private static final char EIGHTH6_CHAR = '\u00BE';
     private static final char EIGHTH7_CHAR = '\u215E';
 
+    public static String LENGTH_FORMAT = "%04d";
     public static SimpleDateFormat DateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     /**
@@ -74,4 +77,5 @@ public class Unit {
 
         return result;
     }
+
 }

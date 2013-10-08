@@ -129,6 +129,9 @@ public class FusionManager {
      */
     public void authenticate(String email, String password) {
 
+        this.auth = "";
+        this.isAuthenticated = false;
+
         try {
 //            HttpClient client = new DefaultHttpClient();
 //            HttpPost post = new HttpPost("https://www.google.com/accounts/ClientLogin");

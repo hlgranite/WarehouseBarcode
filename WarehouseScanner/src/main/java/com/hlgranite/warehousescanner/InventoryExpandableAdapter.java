@@ -145,7 +145,7 @@ public class InventoryExpandableAdapter extends BaseExpandableListAdapter {
                 TextView textView = (TextView)rowView.findViewById(R.id.textView);
                 textView.setText(barcode.getStockCode());
                 TextView textView2 = (TextView)rowView.findViewById(R.id.textView2);
-                textView2.setText(String.format("%04d", barcode.getWidth())+String.format("%04d", barcode.getLength()));
+                textView2.setText(String.format(Unit.LENGTH_FORMAT, barcode.getWidth()) + String.format(Unit.LENGTH_FORMAT, barcode.getLength()));
                 TextView textView3 = (TextView)rowView.findViewById(R.id.textView3);
                 textView3.setText(barcode.getShipment()+barcode.getWarehouse());
 

@@ -4,10 +4,8 @@
         <item>Meter</item>
         <item>Feet</item>
     </string-array>
-
     <string-array name="unitValues">
         <item>m</item>
         <item>ft</item>
     </string-array>
-
 </resources>

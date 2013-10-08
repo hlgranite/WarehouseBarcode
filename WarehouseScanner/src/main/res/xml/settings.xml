@@ -40,13 +40,21 @@
             android:key="prefDangerQuantity" />
     </PreferenceCategory>
 
-    <Preference
-        android:title="Help"
-        android:icon="@android:drawable/ic_menu_help">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="com.hlgranite.warehousescanner"
-            android:targetClass="com.hlgranite.warehousescanner.AboutActivity" />
-    </Preference>
+    <PreferenceCategory
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/title_activity_about">
+        <Preference
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/help"
+            android:summary="How to" />
+        <!-- TODO: Make it an email link -->
+        <Preference
+            android:icon="@android:drawable/ic_dialog_email"
+            android:title="@string/contact"
+            android:summary="@string/contact_email" />
+        <Preference
+            android:key="prefVersion"
+            android:title="@string/version" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
