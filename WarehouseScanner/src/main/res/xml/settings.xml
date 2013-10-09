@@ -49,6 +49,7 @@
             android:summary="How to" />
         <!-- TODO: Make it an email link -->
         <Preference
+            android:key="prefEmail"
             android:icon="@android:drawable/ic_dialog_email"
             android:title="@string/contact"
             android:summary="@string/contact_email" />

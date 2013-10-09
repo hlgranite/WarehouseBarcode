@@ -1,5 +1,6 @@
 package com.hlgranite.warehousescanner;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -53,6 +54,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             Preference prefVersion = findPreference("prefVersion");
             String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             prefVersion.setSummary(version);
+
+            Preference prefEmail = findPreference("prefEmail");
+            prefEmail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.contact_email)});
+                    startActivity(Intent.createChooser(intent, "Sending email"));
+                    return false;
+                }
+            });
         } catch (PackageManager.NameNotFoundException e) {
             Log.e("ERROR", e.getMessage());
         }
