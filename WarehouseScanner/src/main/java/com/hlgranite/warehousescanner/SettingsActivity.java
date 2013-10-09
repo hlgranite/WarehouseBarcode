@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yeang-shing.then on 9/24/13.
@@ -38,8 +39,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             // display unit
             ListPreference listPreference = (ListPreference)findPreference("prefUnit");
             String unit = sharedPreferences.getString("prefUnit", Unit.Meter);
-            HashMap<String, String> unitOptions = getUnitOptions();
-            listPreference.setSummary(unitOptions.get(unit));
+            listPreference.setSummary(getUnit(unit));
 
             // display danger info
             String area = sharedPreferences.getString("prefDangerArea", "0");
@@ -116,5 +116,21 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             output.put(keys[i], values[i]);
         }
         return output;
+    }
+
+    /**
+     * Return unit display name by provided value.
+     * @param key
+     * @return
+     */
+    private String getUnit(String key) {
+        HashMap<String, String> unitOptions = getUnitOptions();
+        for(Map.Entry<String, String> entry : unitOptions.entrySet()) {
+            if(entry.getValue().equals(key)) {
+                return entry.getKey();
+            }
+        }
+
+        return "";
     }
 }
