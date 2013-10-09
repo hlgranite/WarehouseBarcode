@@ -76,6 +76,7 @@ public class HistoryActivity extends Activity {
             super.onPostExecute(workOrders);
 
             //if(dialog != null) dialog.dismiss();
+            Log.i("INFO", "Total history: "+workOrders.size());
             final ListView listView = (ListView)findViewById(R.id.listView);
             if(listView.getAdapter() == null) {
                 WorkOrderAdapter adapter = new WorkOrderAdapter(context, workOrders);
@@ -130,14 +131,15 @@ public class HistoryActivity extends Activity {
                 // Fail always null: WorkOrder workOrder = (WorkOrder)listView.getSelectedItem();
                 if(selectedIndex > -1) { //if(workOrder != null)
                     WorkOrderAdapter adapter = (WorkOrderAdapter)listView.getAdapter();
-                    long id = adapter.getItem(selectedIndex).getId();
+                    WorkOrder workOrder = adapter.getItem(selectedIndex);
+                    long id = workOrder.getId();
                     Log.i("INFO", "remove selected WorkOrder:"+id);
                     FusionManager.getInstance().removeWorkOrder(id);
+                    //FusionManager.getInstance().resetWorkOrder();
+                    adapter.remove(workOrder);// HACK: Not really accurate if http post failed.
 
                     // force to auto refresh after deletion
                     isBack = false;
-                    //FusionManager.getInstance().resetWorkOrder();
-                    //new RetrieveHistory(this).execute();
                 }
                 return true;
             default:

@@ -46,20 +46,17 @@ public class FusionManager {
      * Auth token for read/write fusion table
      */
     private String auth = "";
-    private final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
-
-    private final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
-    private final String shipTableId = "1ScgXEsfcwRdiTgqO65_rWm6kiXkKwlfQtsFCiIM";
-    private final String warehouseTableId = "1K0EohmDFo5H5O9WQRuL8oQFgAM2bUWzgboCYDRM";
-    private final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";
-
-    private final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
-    private final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
+    public final String urlPrefix = "https://www.googleapis.com/fusiontables/v1/query";
+    public final String stockTableId = "1hyYCTWWMIXFtnd83UL6G_4ZoTDNJSoUGKwzazuM";
+    public final String shipTableId = "1ScgXEsfcwRdiTgqO65_rWm6kiXkKwlfQtsFCiIM";
+    public final String warehouseTableId = "1K0EohmDFo5H5O9WQRuL8oQFgAM2bUWzgboCYDRM";
+    public final String stockInTableId = "1CHV0AH_1b79rVOs0TKR9VRLlBSOJ1PucqTJGLJk";
+    public final String customerTableId = "1GWKZhiHRzza0v4THy8uhNJIStVqdiLOah_jTEuE";
+    public final String stockOutTableId = "1tBDriL2j2nByrDSXP1bAIgKJ71I3atNdfPlcEX4";
 
     private ArrayList<Customer> customers;
     private ArrayList<Warehouse> warehouses;
     private ArrayList<ShipCode> shipCodes;
-
     private ArrayList<Shipment> shipments;
     private ArrayList<WorkOrder> workOrders;
     private ArrayList<Stock> stocks;
@@ -469,17 +466,18 @@ public class FusionManager {
      */
     public void checkout(WorkOrder order, int quantity) {
         try {
-            HttpPost post = new HttpPost(urlPrefix);
-
-            String sql = "";
+            String sql = "?sql=";
             for(int i=0;i<quantity;i++) {
+                // http://www.tutorialspoint.com/java/java_date_time.htm
                 sql += "INSERT INTO " + stockOutTableId + " (barcode,date,sold,reference) VALUES (";
-                sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$te %1$tH:%1$tM:%1tS", order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
+                sql += "'"+order.getBarcode().getNumber()+"','"+String.format("%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1tS", order.getDate())+"','"+order.getCustomer()+"','"+order.getReference()+"'";
                 sql += ");";
             }
             Log.i("INFO", sql);
+
+            HttpPost post = new HttpPost(validateUrl(urlPrefix+sql));
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("sql", sql));
+            //params.add(new BasicNameValuePair("sql", sql));
             params.add(new BasicNameValuePair("key", apiKey));
             UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
             post.setEntity(ent);
@@ -499,12 +497,12 @@ public class FusionManager {
         if(id == 0) return;
 
         try {
-            HttpPost post = new HttpPost(urlPrefix);
-
-            String sql = "DELETE FROM " + stockOutTableId + " WHERE ROWID='"+id+"'";
+            String sql = "?sql=DELETE FROM " + stockOutTableId + " WHERE ROWID='"+id+"'";
             Log.i("INFO", sql);
+
+            HttpPost post = new HttpPost(validateUrl(urlPrefix+sql));
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("sql", sql));
+            //params.add(new BasicNameValuePair("sql", sql));
             params.add(new BasicNameValuePair("key", apiKey));
             UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
             post.setEntity(ent);
@@ -522,14 +520,14 @@ public class FusionManager {
      */
     public void addStock(Stock stock) {
         try {
-            HttpPost post = new HttpPost(urlPrefix);
-
-            String sql = "INSERT INTO " + stockTableId + " (code,name,description,imageUrl) VALUES (";
+            String sql = "&sql=INSERT INTO " + stockTableId + " (code,name,description,imageUrl) VALUES (";
             sql += "'"  +stock.getCode() + "','" + stock.getName() + "','" + stock.getDescription() + "','" + stock.getImageUrl() + "'";
             sql += ")";
             Log.i("INFO", sql);
+
+            HttpPost post = new HttpPost(validateUrl(urlPrefix+sql));
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("sql", sql));
+            //params.add(new BasicNameValuePair("sql", sql));
             params.add(new BasicNameValuePair("key", apiKey));
             UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
             post.setEntity(ent);
@@ -660,7 +658,6 @@ public class FusionManager {
     }
 
     private class PostWeb extends AsyncTask<String, Void, HttpEntity> {
-
         HttpClient client = new DefaultHttpClient();
         HttpPost post = null;
 
@@ -685,11 +682,20 @@ public class FusionManager {
             super.onPostExecute(httpEntity);
 
             if(httpEntity != null) {
+
                 try {
                     Log.i("INFO", EntityUtils.toString(httpEntity));
+
+                    if(this.post.getURI().toString().contains(FusionManager.getInstance().stockTableId)) {
+                        FusionManager.getInstance().reset();
+                    }
+                    // HACK: Make sure reload history everytime a new checkout
+                    if(this.post.getURI().toString().contains(FusionManager.getInstance().stockOutTableId)) {
+                        FusionManager.getInstance().resetWorkOrder();
+                    }
                     //Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    Log.e("ERROR", e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
@@ -701,7 +707,7 @@ public class FusionManager {
      * @return
      */
     private String validateUrl(String url) {
-        url = url.replace(" ", "+");// "%20");
+        url = url.replace(" ", "%20");// "+");
         return url;
     }
 

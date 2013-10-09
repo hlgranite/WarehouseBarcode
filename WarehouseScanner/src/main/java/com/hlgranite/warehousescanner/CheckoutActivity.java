@@ -1,5 +1,6 @@
 package com.hlgranite.warehousescanner;
 
+import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -68,14 +70,23 @@ public class CheckoutActivity extends Activity {
                 if(resultCode == Activity.RESULT_OK) {
                     // TODO: Not true, this must really return from FusionManager.checkout result
                     Toast.makeText(getApplicationContext(), "Checkout successfully!", Toast.LENGTH_LONG).show();
+
+                    // HACK: clear all history force rebind
+                    TabActivity parent = (TabActivity)getParent();
+                    String tagName = getResources().getString(R.string.history);
+                    Activity historyActivity = parent.getLocalActivityManager().getActivity(tagName);
+                    ListView listViewH = (ListView)historyActivity.findViewById(R.id.listView);
+                    if(listViewH.getAdapter() != null) {
+                        WorkOrderAdapter existing = (WorkOrderAdapter)listViewH.getAdapter();
+                        existing.clear();
+                        existing.notifyDataSetChanged();
+                    }
                 }
                 break;
             //case SCAN_ACTIVITY:
             default:
                 IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
                 if(scanResult != null) {
-                //if(resultCode == Activity.RESULT_OK) {
-                    //String barcode = data.getStringExtra("RESULT");
                     String barcode = scanResult.getContents();
                     Log.i("INFO", "Capture barcode: " + barcode);
                     Intent i = new Intent(CheckoutActivity.this, ManualActivity.class);
