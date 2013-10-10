@@ -67,8 +67,8 @@ public class MainActivity extends TabActivity {
         String unit = sharedPreferences.getString("prefUnit", Unit.Meter);
         FusionManager.getInstance().setUnit(unit);
 
-        String email = sharedPreferences.getString("prefUsername", "NULL");
-        String password = sharedPreferences.getString("prefPassword", "NULL");
+        String email = sharedPreferences.getString("prefUsername", "");
+        String password = sharedPreferences.getString("prefPassword", "");
         Log.i("INFO", "Email: "+email);
         Log.i("INFO", "Unit: "+unit);
         if(!email.isEmpty() && !password.isEmpty()) {

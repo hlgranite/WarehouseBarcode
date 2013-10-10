@@ -25,7 +25,7 @@
     <string name="pref_password">Set password</string>
     <string name="pref_password_summary">Set your password</string>
     <string name="pref_unit_profile">Unit</string>
-    <string name="pref_unit">Unit</string>
+    <string name="pref_unit">Set unit</string>
     <string name="pref_unit_summary">Choose Unit</string>
     <string name="pref_notification">Notification</string>
     <string name="pref_danger_area">Danger Level Area</string>

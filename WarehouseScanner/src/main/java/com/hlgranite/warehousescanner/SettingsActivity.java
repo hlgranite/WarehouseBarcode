@@ -27,12 +27,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         try {
             // display value in setting if any
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String email = sharedPreferences.getString("prefUsername", "NULL");
-            String password = sharedPreferences.getString("prefPassword", "NULL");
-            if(email != null && password != null) {
+            String email = sharedPreferences.getString("prefUsername", "");
+            if(!email.isEmpty()) {
                 EditTextPreference prefUsername = (EditTextPreference)findPreference("prefUsername");
-                EditTextPreference prefPassword = (EditTextPreference)findPreference("prefPassword");
                 prefUsername.setSummary(email);
+            }
+            String password = sharedPreferences.getString("prefPassword", "");
+            if(!password.isEmpty()) {
+                EditTextPreference prefPassword = (EditTextPreference)findPreference("prefPassword");
                 prefPassword.setSummary(toAsterisk(prefPassword.getText()));
             }
 
@@ -61,6 +63,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 public boolean onPreferenceClick(Preference preference) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.contact_email)});
+                    intent.setType("message/rfc822");//"application/octet-stream");
                     startActivity(Intent.createChooser(intent, "Sending email"));
                     return false;
                 }
@@ -91,7 +94,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             if(editText.getKey().toLowerCase().contains("password")) {
                 editText.setSummary(toAsterisk(editText.getText()));
             } else {
-                editText.setSummary(editText.getText());
+                String summary = editText.getText();
+                if(editText.getKey().equals("prefDangerArea")) {
+                    summary += Unit.Meter + Area.SQUARE;
+                } else if(editText.getKey().equals("prefDangerQuantity")) {
+                    summary += Unit.Piece;
+                }
+                editText.setSummary(summary);
             }
         } else if(pref instanceof ListPreference) {
             ListPreference listPref = (ListPreference)pref;
@@ -99,6 +108,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         }
     }
 
+    /**
+     * Replace all string into asterisk for hiding purpose.
+     * @param value
+     * @return
+     */
     private String toAsterisk(String value) {
         String output = "";
         for(char c: value.toCharArray()) {
