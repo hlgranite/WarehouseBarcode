@@ -76,7 +76,7 @@ public class CheckoutActivity extends Activity {
                     String tagName = getResources().getString(R.string.history);
                     Activity historyActivity = parent.getLocalActivityManager().getActivity(tagName);
                     ListView listViewH = (ListView)historyActivity.findViewById(R.id.listView);
-                    if(listViewH.getAdapter() != null) {
+                    if(listViewH != null && listViewH.getAdapter() != null) {
                         WorkOrderAdapter existing = (WorkOrderAdapter)listViewH.getAdapter();
                         existing.clear();
                         existing.notifyDataSetChanged();

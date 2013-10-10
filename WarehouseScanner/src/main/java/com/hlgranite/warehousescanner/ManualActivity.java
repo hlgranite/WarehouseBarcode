@@ -164,6 +164,7 @@ public class ManualActivity extends Activity {
      * Preload barcode data.
      */
     private void loadBarcodeInfo(Stock stock) {
+        if(stock == null) return;
 
         TextView textView7 = (TextView)findViewById(R.id.textView7);
         textView7.setText(stock.getName());
