@@ -130,16 +130,6 @@ public class FusionManager {
         this.isAuthenticated = false;
 
         try {
-//            HttpClient client = new DefaultHttpClient();
-//            HttpPost post = new HttpPost("https://www.google.com/accounts/ClientLogin");
-//            List<NameValuePair> params = new ArrayList<NameValuePair>();
-//            params.add(new BasicNameValuePair("Email", email));
-//            params.add(new BasicNameValuePair("Passwd", password));
-//            params.add(new BasicNameValuePair("service", "fusiontables"));
-//            UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
-//            post.setEntity(ent);
-//            new PostWeb(post).execute();
-
             String url = "https://www.google.com/accounts/ClientLogin?Email="+email+"&Passwd="+password+"&service=fusiontables";
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(url);

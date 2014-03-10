@@ -16,9 +16,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class CheckoutActivity extends Activity {
 
-    private FusionManager fusionManager = null;
     private final int MANUAL_ACTIVITY = 2;
-    private final int SCAN_ACTIVITY = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +28,6 @@ public class CheckoutActivity extends Activity {
 
         Button manual = (Button)findViewById(R.id.manual);
         manual.setOnClickListener(manualClick);
-
-        fusionManager = FusionManager.getInstance();
     }
 
     protected View.OnClickListener scanClick = new View.OnClickListener() {
@@ -39,11 +35,6 @@ public class CheckoutActivity extends Activity {
         public void onClick(View v) {
             // Launch camera for scan barcode
             Log.i("INFO", "Launch camera for scan barcode ");
-
-            // see http://damianflannery.wordpress.com/2011/06/13/integrate-zxing-barcode-scanner-into-your-android-app-natively-using-eclipse/
-//            Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-//            intent.putExtra("SCAN_MODE", "CODE_128");
-//            startActivityForResult(intent, SCAN_ACTIVITY);
 
             // see http://code.google.com/p/zxing/wiki/ScanningViaIntent
             IntentIntegrator integrator = new IntentIntegrator(CheckoutActivity.this);
